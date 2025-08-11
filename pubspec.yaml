@@ -16,7 +16,7 @@ dependencies:
   phosphor_flutter: ^1.0.0
   font_awesome_flutter: ^10.6.0
   shared_preferences: ^2.5.3
-
+  dio: ^5.8.0+1
 
 dev_dependencies:
   flutter_test:
