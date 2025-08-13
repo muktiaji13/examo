@@ -1,15 +1,125 @@
+// lib/features/bank_soal/presentation/bank_soal_page.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 
-class BankSoalPage extends StatefulWidget {
+class BankSoalItem {
+  final String id;
+  final String title;
+  final String subtitle;
+  final DateTime createdAt;
+
+  const BankSoalItem({
+    required this.id,
+    required this.title,
+    required this.subtitle,
+    required this.createdAt,
+  });
+}
+
+class BankSoalState {
+  final List<BankSoalItem> all;
+  final String query;
+  final String sort;
+
+  const BankSoalState({
+    required this.all,
+    this.query = '',
+    this.sort = 'Terbaru',
+  });
+
+  BankSoalState copyWith({
+    List<BankSoalItem>? all,
+    String? query,
+    String? sort,
+  }) {
+    return BankSoalState(
+      all: all ?? this.all,
+      query: query ?? this.query,
+      sort: sort ?? this.sort,
+    );
+  }
+
+  List<BankSoalItem> get filtered {
+    final q = query.toLowerCase();
+    var list = all.where((e) {
+      if (q.isEmpty) return true;
+      return e.title.toLowerCase().contains(q) ||
+          e.subtitle.toLowerCase().contains(q);
+    }).toList();
+
+    list.sort((a, b) {
+      if (sort == 'Terbaru') {
+        return b.createdAt.compareTo(a.createdAt);
+      }
+      return a.createdAt.compareTo(b.createdAt);
+    });
+
+    return list;
+  }
+}
+
+class BankSoalNotifier extends StateNotifier<BankSoalState> {
+  BankSoalNotifier() : super(BankSoalState(all: _dummy));
+
+  static final List<BankSoalItem> _dummy = [
+    BankSoalItem(
+      id: '1',
+      title: 'Informatika Komputer d..',
+      subtitle: 'Sistem operasi dan sistem kom..',
+      createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+    ),
+    BankSoalItem(
+      id: '2',
+      title: 'Informatika Komputer d..',
+      subtitle: 'Sistem operasi dan sistem kom..',
+      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+    ),
+    BankSoalItem(
+      id: '3',
+      title: 'Informatika Komputer d..',
+      subtitle: 'Sistem operasi dan sistem kom..',
+      createdAt: DateTime.now().subtract(const Duration(hours: 4)),
+    ),
+  ];
+
+  void setQuery(String q) {
+    state = state.copyWith(query: q);
+  }
+
+  void setSort(String s) {
+    state = state.copyWith(sort: s);
+  }
+
+  void addDummy() {
+    final now = DateTime.now();
+    final newItem = BankSoalItem(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      title: 'Informatika Komputer d..',
+      subtitle: 'Sistem operasi dan sistem kom..',
+      createdAt: now,
+    );
+    state = state.copyWith(all: [newItem, ...state.all]);
+  }
+
+  void remove(String id) {
+    state = state.copyWith(all: state.all.where((e) => e.id != id).toList());
+  }
+}
+
+final bankSoalProvider = StateNotifierProvider<BankSoalNotifier, BankSoalState>(
+  (ref) => BankSoalNotifier(),
+);
+
+class BankSoalPage extends ConsumerStatefulWidget {
   const BankSoalPage({super.key});
 
   @override
-  State<BankSoalPage> createState() => _BankSoalPageState();
+  ConsumerState<BankSoalPage> createState() => _BankSoalPageState();
 }
 
-class _BankSoalPageState extends State<BankSoalPage> {
+class _BankSoalPageState extends ConsumerState<BankSoalPage> {
   String activeMenu = 'bank_soal';
   bool isSidebarVisible = false;
 
@@ -18,7 +128,6 @@ class _BankSoalPageState extends State<BankSoalPage> {
       activeMenu = menuKey;
       isSidebarVisible = false;
     });
-    print("Navigasi ke: $menuKey");
   }
 
   void toggleSidebar() {
@@ -43,6 +152,9 @@ class _BankSoalPageState extends State<BankSoalPage> {
         ? sidebarWidth
         : 0;
 
+    final state = ref.watch(bankSoalProvider);
+    final notifier = ref.read(bankSoalProvider.notifier);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       body: Stack(
@@ -55,276 +167,216 @@ class _BankSoalPageState extends State<BankSoalPage> {
                   curve: Curves.easeInOut,
                   padding: EdgeInsets.only(left: mainContentLeftPadding),
                   child: SafeArea(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: AppLayout.maxWidth,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 100,
+                          color: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
                             children: [
-                              // AppBar
-                              Container(
-                                color: AppColors.white,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
-                                ),
-                                child: Row(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: toggleSidebar,
-                                      child: Image.asset(
-                                        'assets/images/sidebar_icon.png',
-                                        height: 32,
-                                        width: 32,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Image.asset(
-                                      'assets/images/notif_icon.png',
-                                      height: 24,
-                                      width: 24,
-                                    ),
-                                    const SizedBox(width: 16),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(24),
-                                      child: Image.asset(
-                                        'assets/images/profile_pic.png',
-                                        height: 32,
-                                        width: 32,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ],
+                              GestureDetector(
+                                onTap: toggleSidebar,
+                                child: Image.asset(
+                                  'assets/images/sidebar_icon.png',
+                                  height: 32,
+                                  width: 32,
                                 ),
                               ),
-                              const SizedBox(height: 20),
-
-                              // Title
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Text(
-                                  'Bank Soal',
-                                  style: AppTextStyle.title.copyWith(
-                                    fontSize: 18,
-                                  ),
+                              const Spacer(),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(24),
+                                child: Image.asset(
+                                  'assets/images/profile_pic.png',
+                                  height: 32,
+                                  width: 32,
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(height: 12),
-
-                              // Search Field
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: AppColors.white,
-                                    hintText: 'Telusuri',
-                                    hintStyle: AppTextStyle.inputText,
-                                    prefixIcon: Padding(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Image.asset(
-                                        'assets/images/search_icon.png',
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      borderSide: BorderSide.none,
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 20),
+                                  Text(
+                                    'Bank Soal',
+                                    style: AppTextStyle.title.copyWith(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-
-                              // Tombol + Bank Soal dan Download Bank Soal
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    // + Bank Soal
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            AppColors.roleButtonSelected,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 16,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
+                                  const SizedBox(height: 12),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: 37,
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: AppColors.white,
+                                              hintText: 'Telusuri',
+                                              hintStyle: AppTextStyle.inputText,
+                                              prefixIcon: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  10,
+                                                ),
+                                                child: Image.asset(
+                                                  'assets/images/search_icon.png',
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/plus.png',
-                                            width: 16,
-                                            height: 16,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            'Bank Soal',
-                                            style: AppTextStyle.button,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    // Download Bank Soal
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            AppColors.roleButtonSelected,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 20,
-                                          vertical: 16,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            6,
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/download_icon.png',
-                                            width: 16,
-                                            height: 16,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Text(
-                                            'Bank Soal',
-                                            style: AppTextStyle.button,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-
-                              // Tombol Terbaru
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.white,
-                                        elevation: 0,
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        height: 37,
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 16,
-                                          vertical: 12,
                                         ),
-                                        shape: RoundedRectangleBorder(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
                                           borderRadius: BorderRadius.circular(
                                             6,
                                           ),
                                         ),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              state.sort,
+                                              style: AppTextStyle.inputText
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Image.asset(
+                                              'assets/images/arrow_down.png',
+                                              width: 16,
+                                              height: 16,
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      onPressed: () {},
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Terbaru',
-                                            style: AppTextStyle.inputText
-                                                .copyWith(
-                                                  color: AppColors.black,
-                                                ),
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Image.asset(
-                                            'assets/images/arrow_down.png',
-                                            width: 16,
-                                            height: 16,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 32),
-
-                              // Empty State
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 28,
+                                    ],
                                   ),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                  const SizedBox(height: 12),
+                                  Row(
                                     children: [
-                                      Image.asset(
-                                        'assets/images/empty_bank.png',
-                                        height: 120,
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Oops! Bank Soal Belum Tersedia',
-                                        style: AppTextStyle.title.copyWith(
-                                          fontSize: 14,
+                                      Expanded(
+                                        child: Container(
+                                          height: 44,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF4D55CC),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Image.asset(
+                                                'assets/images/download_icon.png',
+                                                width: 22,
+                                                height: 22,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              const Text(
+                                                'Template',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Poppins',
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                        ),
-                                        child: Text(
-                                          'Silakan klik tombol "Tambah Soal" di atas untuk mulai membuat Soal baru.',
-                                          textAlign: TextAlign.center,
-                                          style: AppTextStyle.subtitle.copyWith(
-                                            fontSize: 12,
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: InkWell(
+                                          onTap: notifier.addDummy,
+                                          child: Container(
+                                            height: 44,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF0081FF),
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/plus.png',
+                                                  width: 22,
+                                                  height: 22,
+                                                ),
+                                                const SizedBox(width: 8),
+                                                const Text(
+                                                  'Bank Soal',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
+                                  const SizedBox(height: 24),
+                                  Column(
+                                    children: state.filtered
+                                        .map(
+                                          (e) => Padding(
+                                            padding: const EdgeInsets.only(
+                                              bottom: 16,
+                                            ),
+                                            child: LayoutBuilder(
+                                              builder: (context, constraints) {
+                                                return _BankSoalCard(
+                                                  item: e,
+                                                  onDelete: () =>
+                                                      notifier.remove(e.id),
+                                                  width: constraints.maxWidth,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                  const SizedBox(height: 40),
+                                ],
                               ),
-                              const SizedBox(height: 40),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ],
           ),
-
-          // overlay for mobile
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
               onTap: closeSidebar,
@@ -338,8 +390,6 @@ class _BankSoalPageState extends State<BankSoalPage> {
                 ),
               ),
             ),
-
-          // Sidebar
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
@@ -348,13 +398,125 @@ class _BankSoalPageState extends State<BankSoalPage> {
             bottom: 0,
             child: Container(
               width: sidebarWidth,
-              color: AppColors.white,
+              color: Colors.white,
               child: SidebarWidget(
                 activeMenu: activeMenu,
                 onMenuTap: onMenuTap,
                 onClose: closeSidebar,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BankSoalCard extends StatelessWidget {
+  final BankSoalItem item;
+  final VoidCallback onDelete;
+  final double? width;
+
+  const _BankSoalCard({
+    required this.item,
+    required this.onDelete,
+    this.width,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width ?? double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFFEBEBEB)),
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min, // agar tidak overflow
+        children: [
+          Container(
+            width: double.infinity,
+            height: 140,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE3F3FF),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Center(
+              child: Image.asset(
+                'assets/images/bank_soal.png',
+                width: 52,
+                height: 52,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            item.title,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            item.subtitle,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
+              fontSize: 14,
+              color: Color(0xFF5E5E5E),
+            ),
+          ),
+          const SizedBox(height: 18),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0081FF), Color(0xFF025BB1)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Detail',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: onDelete,
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEAEB),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: Image.asset(
+                    'assets/images/trash.png',
+                    width: 20,
+                    height: 20,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
