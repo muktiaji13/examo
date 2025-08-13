@@ -1,4 +1,3 @@
-// lib/features/bank_soal/presentation/bank_soal_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
@@ -119,9 +118,57 @@ class BankSoalPage extends ConsumerStatefulWidget {
   ConsumerState<BankSoalPage> createState() => _BankSoalPageState();
 }
 
-class _BankSoalPageState extends ConsumerState<BankSoalPage> {
+class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProviderStateMixin {
   String activeMenu = 'bank_soal';
   bool isSidebarVisible = false;
+
+  // Notif state
+  bool showDeleteNotif = false;
+  BankSoalItem? pendingDeleteItem;
+  late AnimationController _notifAnimController;
+  late Animation<double> _notifScaleAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    _notifAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _notifScaleAnim = CurvedAnimation(
+      parent: _notifAnimController,
+      curve: Curves.easeOutBack,
+      reverseCurve: Curves.easeInBack,
+    );
+  }
+
+  @override
+  void dispose() {
+    _notifAnimController.dispose();
+    super.dispose();
+  }
+
+  void showDeleteNotification(BankSoalItem item) {
+    setState(() {
+      pendingDeleteItem = item;
+      showDeleteNotif = true;
+    });
+    _notifAnimController.forward(from: 0);
+  }
+
+  void hideDeleteNotification() {
+    _notifAnimController.reverse().then((_) {
+      if (mounted) setState(() => showDeleteNotif = false);
+    });
+  }
+
+  void confirmDelete() {
+    final notifier = ref.read(bankSoalProvider.notifier);
+    if (pendingDeleteItem != null) {
+      notifier.remove(pendingDeleteItem!.id);
+    }
+    hideDeleteNotification();
+  }
 
   void onMenuTap(String menuKey) {
     setState(() {
@@ -357,6 +404,7 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> {
                                                   onDelete: () =>
                                                       notifier.remove(e.id),
                                                   width: constraints.maxWidth,
+                                                  onShowDeleteNotif: () => showDeleteNotification(e),
                                                 );
                                               },
                                             ),
@@ -406,6 +454,134 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> {
               ),
             ),
           ),
+          // Notifikasi hapus
+          if (showDeleteNotif)
+            Positioned.fill(
+              child: GestureDetector(
+                onTap: hideDeleteNotification,
+                child: Container(
+                  color: Colors.black.withOpacity(0.35),
+                  child: Center(
+                    child: ScaleTransition(
+                      scale: _notifScaleAnim,
+                      child: Container(
+                        width: 300,
+                        height: 280,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 16,
+                              offset: Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 56,
+                              height: 56,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFEAEB),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Image.asset(
+                                  'assets/images/warning-icon.png',
+                                  width: 32,
+                                  height: 32,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: 189,
+                              child: Text(
+                                'Hapus bank soal ini?',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyle.cardTitle.copyWith(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.black,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            SizedBox(
+                              width: 248,
+                              child: Text(
+                                'File ini akan dihapus secara permanen dan tidak dapat dipulihkan',
+                                textAlign: TextAlign.center,
+                                style: AppTextStyle.cardSubtitle.copyWith(
+                                  fontSize: 13,
+                                  color: AppColors.textGrey2,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 32),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 90,
+                                  height: 36,
+                                  child: TextButton(
+                                    onPressed: hideDeleteNotification,
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: const Color(0xFFF5F5F5),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Tidak',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: AppColors.textGrey2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                SizedBox(
+                                  width: 116,
+                                  height: 36,
+                                  child: ElevatedButton(
+                                    onPressed: confirmDelete,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.dangerRed,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      elevation: 0,
+                                    ),
+                                    child: Text(
+                                      'Ya, Hapus',
+                                      style: TextStyle(
+                                        fontFamily: 'Poppins',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -416,11 +592,13 @@ class _BankSoalCard extends StatelessWidget {
   final BankSoalItem item;
   final VoidCallback onDelete;
   final double? width;
+  final VoidCallback? onShowDeleteNotif;
 
   const _BankSoalCard({
     required this.item,
     required this.onDelete,
     this.width,
+    this.onShowDeleteNotif,
   });
 
   @override
@@ -435,7 +613,7 @@ class _BankSoalCard extends StatelessWidget {
       padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min, // agar tidak overflow
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: double.infinity,
@@ -500,7 +678,7 @@ class _BankSoalCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               InkWell(
-                onTap: onDelete,
+                onTap: onShowDeleteNotif, // ubah ke trigger notifikasi
                 child: Container(
                   width: 36,
                   height: 36,
