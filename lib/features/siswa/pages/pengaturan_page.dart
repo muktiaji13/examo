@@ -62,7 +62,6 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
     final authNotifier = ref.read(authProvider.notifier);
 
     final w = MediaQuery.of(context).size.width;

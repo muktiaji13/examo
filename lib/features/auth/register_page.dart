@@ -4,7 +4,6 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../config/styles.dart';
 import 'register_provider.dart';
-import '../../core/api_service.dart';
 
 class RegisterPage extends ConsumerStatefulWidget {
   const RegisterPage({super.key});
