@@ -11,6 +11,7 @@ import 'features/guru/pages/daftar_paket_page.dart';
 import 'features/guru/pages/riwayat_pembelian_page.dart';
 import 'features/guru/pages/kredensial_page.dart';
 import 'features/guru/pages/profile_page.dart';
+import 'features/guru/pages/exam_detail_page.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         '/kredensial': (context) => const KredensialPage(),
         '/profil': (context) => const ProfilePage(),
         '/pengaturan': (context) => const PengaturanPage(),
+        '/exam-detail-page': (context) => const ExamDetailPage(),
       },
     );
   }

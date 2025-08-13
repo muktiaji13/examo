@@ -75,7 +75,11 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     try {
       final response = await http.post(
         Uri.parse('http://127.0.0.1:8000/api/login'),
-        body: {'email': email, 'password': password},
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json', // tambahkan ini
+        },
+        body: json.encode({'email': email, 'password': password}), // ubah ke json
       );
 
       if (response.statusCode == 200) {

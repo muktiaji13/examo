@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../../config/styles.dart';
 import 'login_provider.dart';
 import 'forgot_password_page.dart';
 import '../guru/pages/dashboard_page.dart';
 import '../siswa/pages/dashboard_page.dart';
+import '../../core/api_service.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   @override
@@ -19,7 +18,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   String? emailError;
   String? passwordError;
-  String? authError; // New error for combined authentication errors
+  String? authError; 
   bool isLoading = false;
 
   void _validateAndLogin() async {
@@ -30,7 +29,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() {
       emailError = null;
       passwordError = null;
-      authError = null; // Reset auth error
+      authError = null;
     });
 
     // Field validation
@@ -49,37 +48,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() => isLoading = true);
 
     try {
-      final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/login'),
-        headers: {'Accept': 'application/json'},
-        body: {'email': email, 'password': password},
-      );
+      final user = await ApiService.loginUser(email: email, password: password);
+      final role = user.role;
 
-      final data = json.decode(response.body);
-      if (response.statusCode == 200 && data['token'] != null) {
-        final role = data['user']['role'];
-
-        if (role == 'guru') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => HomePage()),
-          );
-        } else if (role == 'user') {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => DashboardPage()),
-          );
-        } else {
-          _showErrorDialog('Role tidak dikenali');
-        }
+      if (role == 'guru') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => HomePage()),
+        );
+      } else if (role == 'user') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => DashboardPage()),
+        );
       } else {
-        setState(() {
-          // Combine email/password errors into one message under password field
-          authError = 'Email atau Password salah';
-        });
+        _showErrorDialog('Role tidak dikenali');
       }
     } catch (e) {
-      _showErrorDialog('Terjadi kesalahan koneksi');
+      setState(() {
+        authError = 'Email atau Password salah';
+      });
     } finally {
       setState(() => isLoading = false);
     }
@@ -290,7 +278,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           Padding(
             padding: const EdgeInsets.only(top: 6, left: 4),
             child: Text(
-              errorText!,
+              errorText,
               style: const TextStyle(color: Colors.red, fontSize: 12),
             ),
           ),

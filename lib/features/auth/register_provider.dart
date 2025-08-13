@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/api_service.dart';
 import '../../core/providers/auth_provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class RegisterFormState {
   final bool isPasswordVisible;
   final bool isConfirmPasswordVisible;
   final String selectedRole;
-  String? emailError; // Added email error state
+  String? emailError; 
 
   RegisterFormState({
     this.isPasswordVisible = false,
@@ -72,41 +70,24 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
         throw Exception('Pilih role terlebih dahulu');
       }
 
-      final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/register'),
-        headers: {'Accept': 'application/json'},
-        body: {
-          'name': name,
-          'email': email,
-          'password': password,
-          'role': state.selectedRole.toLowerCase() == 'siswa' ? 'user' : 'guru',
-        },
+      final user = await ApiService.registerUser(
+        name: name,
+        email: email,
+        password: password,
+        role: state.selectedRole.toLowerCase() == 'siswa' ? 'user' : 'guru',
       );
 
-      final responseData = json.decode(response.body);
-
-      if (response.statusCode == 200) {
-        final user = await ApiService.registerUser(
-          name: name,
-          email: email,
-          password: password,
-          role: state.selectedRole.toLowerCase() == 'siswa' ? 'user' : 'guru',
-        );
-
-        if (user != null) {
-          await ref.read(authProvider.notifier).login(email, password);
-        }
-      } else if (response.statusCode == 422) {
-        if (responseData['errors']?['email'] != null) {
-          state = state.copyWith(
-            emailError: 'The email has already been taken',
-          );
-          throw Exception('Email sudah terdaftar');
-        }
-      } else {
-        throw Exception('Failed to register: ${response.statusCode}');
+      if (user != null) {
+        await ref.read(authProvider.notifier).login(email, password);
       }
     } catch (e) {
+      // Tangani error email sudah terdaftar
+      if (e.toString().contains('email') && e.toString().contains('taken')) {
+        state = state.copyWith(
+          emailError: 'Email sudah terdaftar',
+        );
+        throw Exception('Email sudah terdaftar');
+      }
       if (e.toString().contains('Failed to fetch') ||
           e.toString().contains('ClientException')) {
         ScaffoldMessenger.of(context).showSnackBar(
