@@ -1,15 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 
-class DaftarUjianPage extends StatefulWidget {
+// Provider dummy data
+final ujianProvider = Provider<List<Map<String, String>>>((ref) {
+  return [
+    {
+      'title': 'Ujian Bab Komputer In..',
+      'status': 'Aktif',
+      'questions': '25 Pertanyaan',
+      'image': 'assets/images/ujian_aktif.png'
+    },
+    {
+      'title': 'Ujian Bab Komputer In..',
+      'status': 'Berlangsung',
+      'questions': '25 Pertanyaan',
+      'image': 'assets/images/no-image.png'
+    },
+    {
+      'title': 'Ujian Bab Komputer In..',
+      'status': 'Nonaktif',
+      'questions': '25 Pertanyaan',
+      'image': 'assets/images/ujian_aktif.png'
+    },
+  ];
+});
+
+class DaftarUjianPage extends ConsumerStatefulWidget {
   const DaftarUjianPage({super.key});
 
   @override
-  State<DaftarUjianPage> createState() => _DaftarUjianPageState();
+  ConsumerState<DaftarUjianPage> createState() => _DaftarUjianPageState();
 }
 
-class _DaftarUjianPageState extends State<DaftarUjianPage> {
+class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
   String activeMenu = 'daftar_ujian';
   bool isSidebarVisible = false;
 
@@ -18,7 +43,6 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
       activeMenu = menuKey;
       isSidebarVisible = false;
     });
-    print("Navigasi ke: $menuKey");
   }
 
   void toggleSidebar() {
@@ -39,9 +63,10 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
     final bool isWideScreen = screenWidth > 1000;
     final double sidebarWidth = isWideScreen ? 300 : 240;
     final double sidebarLeftPosition = isSidebarVisible ? 0 : -sidebarWidth;
-    final double mainContentLeftPadding = isSidebarVisible && isWideScreen
-        ? sidebarWidth
-        : 0;
+    final double mainContentLeftPadding =
+        isSidebarVisible && isWideScreen ? sidebarWidth : 0;
+
+    final ujianList = ref.watch(ujianProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -58,9 +83,8 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: AppLayout.maxWidth,
-                        ),
+                        constraints:
+                            BoxConstraints(maxWidth: AppLayout.maxWidth),
                         child: Container(
                           color: const Color(0xFFF5F5F5),
                           child: SingleChildScrollView(
@@ -69,15 +93,12 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                               children: [
                                 // AppBar
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 0,
-                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 0),
                                   child: Container(
                                     color: Colors.white,
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 12,
-                                    ),
+                                        horizontal: 20, vertical: 12),
                                     child: Row(
                                       children: [
                                         GestureDetector(
@@ -103,9 +124,8 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                         ),
                                         const SizedBox(width: 16),
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            24,
-                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(24),
                                           child: Image.asset(
                                             'assets/images/profile_pic.png',
                                             height: 32,
@@ -122,22 +142,19 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                 // Title
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
+                                      horizontal: 20),
                                   child: Text(
                                     'Pilih Ujian',
-                                    style: AppTextStyle.title.copyWith(
-                                      fontSize: 18,
-                                    ),
+                                    style: AppTextStyle.title
+                                        .copyWith(fontSize: 18),
                                   ),
                                 ),
                                 const SizedBox(height: 12),
 
-                                // Telusuri (full width)
+                                // Telusuri
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
+                                      horizontal: 20),
                                   child: TextField(
                                     decoration: InputDecoration(
                                       filled: true,
@@ -153,7 +170,8 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                         ),
                                       ),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius:
+                                            BorderRadius.circular(12),
                                         borderSide: BorderSide.none,
                                       ),
                                     ),
@@ -161,11 +179,10 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                 ),
                                 const SizedBox(height: 12),
 
-                                // Tombol Tambah Ujian dan Filter
+                                // Tambah Ujian + Filter
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
+                                      horizontal: 20),
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -175,13 +192,10 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                           backgroundColor:
                                               AppColors.roleButtonSelected,
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 20,
-                                            vertical: 16,
-                                          ),
+                                              horizontal: 20, vertical: 16),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(6),
                                           ),
                                         ),
                                         onPressed: () {},
@@ -194,31 +208,24 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                               height: 16,
                                             ),
                                             const SizedBox(width: 8),
-                                            Text(
-                                              'Tambah Ujian',
-                                              style: AppTextStyle.button,
-                                            ),
+                                            Text('Tambah Ujian',
+                                                style: AppTextStyle.button),
                                           ],
                                         ),
                                       ),
-
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 10,
-                                        ),
+                                            horizontal: 12, vertical: 10),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFFFFFF),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
                                         child: Row(
                                           children: [
-                                            Text(
-                                              'Filter',
-                                              style: AppTextStyle.inputText,
-                                            ),
+                                            Text('Filter',
+                                                style:
+                                                    AppTextStyle.inputText),
                                             const SizedBox(width: 4),
                                             Image.asset(
                                               'assets/images/arrow_down.png',
@@ -231,54 +238,20 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
                                     ],
                                   ),
                                 ),
-
                                 const SizedBox(height: 32),
 
-                                // Empty State
+                                // List ujian
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Container(
-                                    width: double.infinity,
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 28,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.white,
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/empty_exam.png',
-                                          height: 120,
-                                        ),
-                                        const SizedBox(height: 16),
-                                        Text(
-                                          'Oops! Daftar Ujian Belum Tersedia',
-                                          style: AppTextStyle.title.copyWith(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 24,
-                                          ),
-                                          child: Text(
-                                            'Silakan klik tombol "Tambah Ujian" di atas untuk mulai membuat Ujian baru.',
-                                            textAlign: TextAlign.center,
-                                            style: AppTextStyle.subtitle
-                                                .copyWith(fontSize: 12),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      horizontal: 20),
+                                  child: Column(
+                                    children: ujianList
+                                        .map((item) =>
+                                            _buildUjianCard(context, item))
+                                        .toList(),
                                   ),
                                 ),
+
                                 const SizedBox(height: 40),
                               ],
                             ),
@@ -292,7 +265,7 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
             ],
           ),
 
-          // Sidebar dan overlay
+          // Overlay
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
               onTap: closeSidebar,
@@ -324,6 +297,135 @@ class _DaftarUjianPageState extends State<DaftarUjianPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUjianCard(BuildContext context, Map<String, String> item) {
+    Color badgeColor;
+    Color textColor;
+    Color? buttonTop;
+    Color? buttonBottom;
+    bool isDisabled = false;
+
+    switch (item['status']) {
+      case 'Aktif':
+        badgeColor = const Color(0xFFE9FFF2);
+        textColor = const Color(0xFF2ECC71);
+        buttonTop = AppColors.primaryBlue;
+        buttonBottom = const Color(0xFF025BB1);
+        break;
+      case 'Berlangsung':
+        badgeColor = const Color(0xFFFFF9E5);
+        textColor = const Color(0xFFF8BD00);
+        buttonTop = AppColors.primaryBlue;
+        buttonBottom = const Color(0xFF025BB1);
+        break;
+      default:
+        badgeColor = const Color(0xFFFFEAEB);
+        textColor = const Color(0xFFD21F28);
+        isDisabled = true;
+        break;
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          border: Border.all(color: const Color(0xFFEBEBEB)),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Container(
+              height: 130,
+              decoration: BoxDecoration(
+                color: const Color(0xFFD5EDFF),
+                borderRadius: BorderRadius.circular(7),
+              ),
+              child: Center(
+                child: Image.asset(item['image']!, height: 80),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(item['title']!,
+                      style: AppTextStyle.blackSubtitle
+                          .copyWith(fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: badgeColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(item['status']!,
+                      style: AppTextStyle.menuItem.copyWith(
+                          color: textColor, fontSize: 12)),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(item['questions']!,
+                  style: AppTextStyle.cardSubtitle),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onTap: isDisabled
+                        ? null
+                        : () {
+                            // Aksi ketika klik
+                          },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        gradient: isDisabled
+                            ? null
+                            : LinearGradient(
+                                colors: [buttonTop!, buttonBottom!],
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                              ),
+                        color: isDisabled
+                            ? const Color(0xFFDADADA)
+                            : null,
+                      ),
+                      child: Center(
+                        child: Text('Selengkapnya',
+                            style: AppTextStyle.button),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFEAEB),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child:
+                        Image.asset('assets/images/trash.png', height: 18),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
