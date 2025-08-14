@@ -119,7 +119,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       }
       
       await prefs.clear();
-      state = AuthState(); // Reset ke state awal
+      state = AuthState(); // Reset state to default (no user, no role)
     } catch (e) {
       state = state.copyWith(
         isLoading: false,

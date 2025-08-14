@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/styles.dart';
-import '../../features/siswa/pages/dashboard_page.dart';
-import '../../features/guru/pages/dashboard_page.dart';
 import '../../core/providers/auth_provider.dart';
 
 class SidebarWidget extends ConsumerStatefulWidget {
@@ -34,15 +32,14 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
 
     switch (menuKey) {
       case 'dashboard':
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) =>
-                role == 'guru' ? const HomePage() : const DashboardPage(),
-          ),
-        );
+        if (role == 'guru') {
+          Navigator.of(context).pushReplacementNamed('/dashboard');
+        } else {
+          Navigator.of(context).pushReplacementNamed('/dashboard-siswa');
+        }
         break;
       case 'pengaturan':
-        if (mounted) Navigator.of(context).pushNamed('/pengaturan');
+        Navigator.of(context).pushNamed('/pengaturan');
         break;
       case 'daftar_ujian':
         Navigator.of(context).pushNamed('/daftar_ujian');
@@ -63,14 +60,12 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
         if (role == 'guru') Navigator.of(context).pushNamed('/profil');
         break;
       default:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) =>
-                role == 'guru' ? const HomePage() : const DashboardPage(),
-          ),
-        );
+        if (role == 'guru') {
+          Navigator.of(context).pushReplacementNamed('/dashboard');
+        } else {
+          Navigator.of(context).pushReplacementNamed('/dashboard-siswa');
+        }
     }
-    
   }
 
   Widget buildMenuItem({

@@ -1,10 +1,9 @@
+import 'package:examo/core/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/styles.dart';
 import 'login_provider.dart';
 import 'forgot_password_page.dart';
-import '../guru/pages/dashboard_page.dart';
-import '../siswa/pages/dashboard_page.dart';
 import '../../core/api_service.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -51,16 +50,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final user = await ApiService.loginUser(email: email, password: password);
       final role = user.role;
 
+      // Update authProvider state
+      await ref.read(authProvider.notifier).login(email, password);
+
+      // Navigasi menggunakan route agar rebuild sesuai role
       if (role == 'guru') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => HomePage()),
-        );
+        Navigator.pushReplacementNamed(context, '/dashboard');
       } else if (role == 'user') {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => DashboardPage()),
-        );
+        Navigator.pushReplacementNamed(context, '/dashboard-siswa');
       } else {
         _showErrorDialog('Role tidak dikenali');
       }
