@@ -1,47 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 
-class RiwayatPembelianPage extends StatefulWidget {
+// Provider state Riverpod
+final activeMenuProvider = StateProvider<String>((ref) => 'riwayat');
+final sidebarVisibleProvider = StateProvider<bool>((ref) => false);
+
+// Dummy data pembelian
+final pembelianProvider = Provider<List<Map<String, dynamic>>>((ref) {
+  return List.generate(10, (index) {
+    return {
+      "no": index + 1,
+      "namaPaket": ["Paket Pro", "Paket Premium", "Paket Basic"][index % 3],
+      "durasi": "1 Bulan",
+      "tglMulai": index % 2 == 0 ? "01 Mei 2025" : "01 April 2025",
+      "tglAkhir": index % 2 == 0 ? "1 Juni 2025" : "1 Mei 2025",
+      "status": ["Tuntas", "Pending", "Kadaluarsa"][index % 3]
+    };
+  });
+});
+
+class RiwayatPembelianPage extends ConsumerWidget {
   const RiwayatPembelianPage({super.key});
 
   @override
-  State<RiwayatPembelianPage> createState() => _RiwayatPembelianPageState();
-}
-
-class _RiwayatPembelianPageState extends State<RiwayatPembelianPage> {
-  String activeMenu = 'riwayat';
-  bool isSidebarVisible = false;
-
-  void onMenuTap(String menuKey) {
-    setState(() {
-      activeMenu = menuKey;
-      isSidebarVisible = false;
-    });
-    print("Navigasi ke: $menuKey");
-  }
-
-  void toggleSidebar() {
-    setState(() {
-      isSidebarVisible = !isSidebarVisible;
-    });
-  }
-
-  void closeSidebar() {
-    setState(() {
-      isSidebarVisible = false;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isSidebarVisible = ref.watch(sidebarVisibleProvider);
     final screenWidth = MediaQuery.of(context).size.width;
-    final bool isWideScreen = screenWidth > 1000;
-    final double sidebarWidth = isWideScreen ? 300 : 240;
-    final double sidebarLeftPosition = isSidebarVisible ? 0 : -sidebarWidth;
-    final double mainContentLeftPadding = isSidebarVisible && isWideScreen
-        ? sidebarWidth
-        : 0;
+    final isWideScreen = screenWidth > 1000;
+    final sidebarWidth = isWideScreen ? 300.0 : 240.0;
+    final sidebarLeftPosition = isSidebarVisible ? 0.0 : -sidebarWidth;
+    final mainContentLeftPadding = isSidebarVisible && isWideScreen ? sidebarWidth : 0.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -58,214 +48,20 @@ class _RiwayatPembelianPageState extends State<RiwayatPembelianPage> {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: AppLayout.maxWidth,
-                        ),
+                        constraints: BoxConstraints(maxWidth: AppLayout.maxWidth),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // AppBar
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 0,
-                                ),
-                                child: Container(
-                                  color: AppColors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 12,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: toggleSidebar,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: AppColors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.all(4),
-                                          child: Image.asset(
-                                            'assets/images/sidebar_icon.png',
-                                            height: 32,
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      Image.asset(
-                                        'assets/images/notif_icon.png',
-                                        height: 24,
-                                        width: 24,
-                                      ),
-                                      const SizedBox(width: 16),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(24),
-                                        child: Image.asset(
-                                          'assets/images/profile_pic.png',
-                                          height: 32,
-                                          width: 32,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              _buildAppBar(context, ref),
                               const SizedBox(height: 20),
-
-                              // Title
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Text(
-                                  'Riwayat Pembelian',
-                                  style: AppTextStyle.title.copyWith(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
+                              _buildTitle(),
                               const SizedBox(height: 12),
-
-                              // Filter + Dropdown
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'Filter',
-                                            style: AppTextStyle.subtitle,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Image.asset(
-                                            'assets/images/arrow_down.png',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 6,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius.circular(8),
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            '10',
-                                            style: AppTextStyle.subtitle,
-                                          ),
-                                          const SizedBox(width: 8),
-                                          Image.asset(
-                                            'assets/images/arrow_down.png',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              _buildFilter(),
                               const SizedBox(height: 20),
-
-                              // Table Header
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: AppColors.primaryBlue,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 14,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Flexible(
-                                        flex: 1,
-                                        child: Text(
-                                          'No',
-                                          style: AppTextStyle.button,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        flex: 4,
-                                        child: Text(
-                                          'Nama Paket',
-                                          style: AppTextStyle.button,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        flex: 2,
-                                        child: Text(
-                                          'Durasi',
-                                          style: AppTextStyle.button,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 40),
-
-                              // Empty State
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/empty_data.png',
-                                      ),
-                                      const SizedBox(height: 16),
-                                      Text(
-                                        'Tidak Ada Data',
-                                        style: AppTextStyle.cardTitle,
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Belum ada data yang tersedia untuk ditampilkan. Yuk, mulai tambahkan sekarang!',
-                                        textAlign: TextAlign.center,
-                                        style: AppTextStyle.cardSubtitle,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              _buildTable(context, ref),
+                              const SizedBox(height: 20),
+                              _buildPagination(),
                             ],
                           ),
                         ),
@@ -276,11 +72,9 @@ class _RiwayatPembelianPageState extends State<RiwayatPembelianPage> {
               ),
             ],
           ),
-
-          // Overlay
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
-              onTap: closeSidebar,
+              onTap: () => ref.read(sidebarVisibleProvider.notifier).state = false,
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
                 opacity: isSidebarVisible ? 1 : 0,
@@ -291,8 +85,6 @@ class _RiwayatPembelianPageState extends State<RiwayatPembelianPage> {
                 ),
               ),
             ),
-
-          // Sidebar
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
@@ -303,13 +95,200 @@ class _RiwayatPembelianPageState extends State<RiwayatPembelianPage> {
               width: sidebarWidth,
               color: Colors.white,
               child: SidebarWidget(
-                activeMenu: activeMenu,
-                onMenuTap: onMenuTap,
-                onClose: closeSidebar,
+                activeMenu: ref.watch(activeMenuProvider),
+                onMenuTap: (menuKey) {
+                  ref.read(activeMenuProvider.notifier).state = menuKey;
+                  ref.read(sidebarVisibleProvider.notifier).state = false;
+                },
+                onClose: () => ref.read(sidebarVisibleProvider.notifier).state = false,
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context, WidgetRef ref) {
+    return Container(
+      color: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => ref.read(sidebarVisibleProvider.notifier).state =
+                !ref.read(sidebarVisibleProvider),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.all(4),
+              child: Image.asset('assets/images/sidebar_icon.png', height: 32),
+            ),
+          ),
+          const Spacer(),
+          Image.asset('assets/images/notif_icon.png', height: 24, width: 24),
+          const SizedBox(width: 16),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Image.asset(
+              'assets/images/profile_pic.png',
+              height: 32,
+              width: 32,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTitle() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Text(
+        'Riwayat Pembelian',
+        style: AppTextStyle.title.copyWith(fontSize: 18),
+      ),
+    );
+  }
+
+  Widget _buildFilter() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _filterButton('Filter'),
+          const SizedBox(width: 8),
+          _filterButton('10'),
+        ],
+      ),
+    );
+  }
+
+  Widget _filterButton(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: Row(
+        children: [
+          Text(text, style: AppTextStyle.subtitle),
+          const SizedBox(width: 8),
+          Image.asset('assets/images/arrow_down.png'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTable(BuildContext context, WidgetRef ref) {
+    final data = ref.watch(pembelianProvider);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: const Color(0xFFEBEBEB)),
+          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 3)],
+        ),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: DataTable(
+            headingRowColor: MaterialStateProperty.all(const Color(0xFF0081FF)),
+            headingTextStyle: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              color: Colors.white,
+            ),
+            dataTextStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
+            columns: const [
+              DataColumn(label: Center(child: Text('No'))),
+              DataColumn(label: Center(child: Text('Nama Paket'))),
+              DataColumn(label: Center(child: Text('Durasi'))),
+              DataColumn(label: Center(child: Text('Tanggal Mulai'))),
+              DataColumn(label: Center(child: Text('Tanggal Berakhir'))),
+              DataColumn(label: Center(child: Text('Status'))),
+              DataColumn(label: Center(child: Text('Aksi'))),
+            ],
+            rows: data.map((item) {
+              return DataRow(cells: [
+                DataCell(Center(child: Text(item['no'].toString()))),
+                DataCell(Center(child: Text(item['namaPaket']))),
+                DataCell(Center(child: Text(item['durasi']))),
+                DataCell(Center(child: Text(item['tglMulai']))),
+                DataCell(Center(child: Text(item['tglAkhir']))),
+                DataCell(Center(child: _statusBadge(item['status']))),
+                DataCell(Center(
+                  child: Icon(Icons.remove_red_eye, color: const Color(0xFFF8BD00), size: 21),
+                )),
+              ]);
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _statusBadge(String status) {
+    Color bgColor;
+    Color textColor;
+    if (status == 'Tuntas') {
+      bgColor = const Color(0xFFE9FFF2);
+      textColor = const Color(0xFF2ECC71);
+    } else if (status == 'Pending') {
+      bgColor = const Color(0xFFFFF7E9);
+      textColor = const Color(0xFFFFAE1F);
+    } else {
+      bgColor = const Color(0xFFE9E9E9);
+      textColor = const Color(0xFF717171);
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(6)),
+      child: Text(status, style: TextStyle(color: textColor, fontSize: 12)),
+    );
+  }
+
+  Widget _buildPagination() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _pageButton('<', false),
+        const SizedBox(width: 4),
+        _pageButton('1', true),
+        const SizedBox(width: 4),
+        _pageButton('2', false),
+        const SizedBox(width: 4),
+        _pageButton('>', false),
+      ],
+    );
+  }
+
+  Widget _pageButton(String text, bool active) {
+    return Container(
+      width: 32,
+      height: 32,
+      decoration: BoxDecoration(
+        color: active ? const Color(0xFF0081FF) : Colors.white,
+        border: Border.all(color: const Color(0xFFD1D1D1)),
+        borderRadius: BorderRadius.circular(50),
+      ),
+      child: Center(
+        child: Text(
+          text,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            color: active ? Colors.white : const Color(0xFFD1D1D1),
+          ),
+        ),
       ),
     );
   }

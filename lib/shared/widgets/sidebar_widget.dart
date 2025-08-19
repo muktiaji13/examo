@@ -32,11 +32,8 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
 
     switch (menuKey) {
       case 'dashboard':
-        if (role == 'guru') {
-          Navigator.of(context).pushReplacementNamed('/dashboard');
-        } else {
-          Navigator.of(context).pushReplacementNamed('/dashboard-siswa');
-        }
+        Navigator.of(context).pushReplacementNamed(
+            role == 'guru' ? '/dashboard' : '/dashboard-siswa');
         break;
       case 'pengaturan':
         Navigator.of(context).pushNamed('/pengaturan');
@@ -60,54 +57,114 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
         if (role == 'guru') Navigator.of(context).pushNamed('/profil');
         break;
       default:
-        if (role == 'guru') {
-          Navigator.of(context).pushReplacementNamed('/dashboard');
-        } else {
-          Navigator.of(context).pushReplacementNamed('/dashboard-siswa');
-        }
+        Navigator.of(context).pushReplacementNamed(
+            role == 'guru' ? '/dashboard' : '/dashboard-siswa');
     }
   }
+
+  // itemHeight sesuai permintaan: 32
+  static const double _subItemHeight = 32;
+  // space between subitems (kecil biar rapih)
+  static const double _subItemSpacing = 8;
+  // left column reserved for dashed line + dot (dikecilin biar dot nempel ke garis)
+  static const double _leftColumnWidth = 28;
+  // tombol width (diperbesar biar gak kekecilan)
+  static const double _subItemButtonWidth = 140;
 
   Widget buildMenuItem({
     required String label,
     required String menuKey,
-    required bool isAsset,
+    bool isAsset = false,
     String? iconPath,
     String? activeIconPath,
     IconData? icon,
     IconData? activeIcon,
+    bool showDot = false,
   }) {
     final isActive = widget.activeMenu == menuKey;
-    final color = isActive ? AppColors.white : AppColors.black;
 
+    if (showDot) {
+      return InkWell(
+        onTap: () => _navigateTo(menuKey),
+        child: SizedBox(
+          height: _subItemHeight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // left column buat dashed line + dot, dot ditempatkan tepat di tengah kolom
+              SizedBox(
+                width: _leftColumnWidth,
+                height: _subItemHeight,
+                child: Center(
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: const BoxDecoration(
+                      // tetep abu abu meskipun aktif supaya selalu terlihat
+                      color: Color(0xFFD9D9D9),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+
+              // konten (teks + background aktif) sesuai dimensi tombol
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => _navigateTo(menuKey),
+                child: Container(
+                  width: _subItemButtonWidth,
+                  height: _subItemHeight,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(left: 10), // teks left:10
+                  decoration: BoxDecoration(
+                    color: isActive ? AppColors.primaryBlue : Colors.transparent,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    label,
+                    style: AppTextStyle.subtitle.copyWith(
+                      color: isActive ? AppColors.white : AppColors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // default regular menu item (icon + label)
     return InkWell(
       onTap: () => _navigateTo(menuKey),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primaryBlue : Colors.transparent,
+          color: widget.activeMenu == menuKey ? AppColors.primaryBlue : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Row(
           children: [
             if (isAsset && iconPath != null)
               Image.asset(
-                isActive ? (activeIconPath ?? iconPath) : iconPath,
+                widget.activeMenu == menuKey ? (activeIconPath ?? iconPath) : iconPath,
                 width: 20,
                 height: 20,
               )
             else if (icon != null)
               Icon(
-                isActive ? (activeIcon ?? icon) : icon,
+                widget.activeMenu == menuKey ? (activeIcon ?? icon) : icon,
                 size: 20,
-                color: color,
+                color: widget.activeMenu == menuKey ? AppColors.white : AppColors.black,
               ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 label,
-                style: AppTextStyle.subtitle.copyWith(color: color),
+                style: AppTextStyle.subtitle.copyWith(
+                    color: widget.activeMenu == menuKey ? AppColors.white : AppColors.black),
               ),
             ),
           ],
@@ -161,76 +218,64 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
           ),
         ),
         if (expanded)
-          Padding(
-            padding: const EdgeInsets.only(left: 40, top: 8),
-            child: Column(children: children),
-          ),
+          LayoutBuilder(builder: (context, constraints) {
+            final int count = children.length;
+            final double totalHeight = (count * _subItemHeight) + ((count - 1) * _subItemSpacing);
+            return Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // left dashed line column
+                  SizedBox(
+                    width: _leftColumnWidth,
+                    child: Center(
+                      child: CustomPaint(
+                        size: Size(2, totalHeight),
+                        painter: DashedLinePainter(
+                          color: const Color(0xFFD9D9D9),
+                          strokeWidth: 2,
+                          dashWidth: 5,
+                          dashSpace: 5,
+                          vertical: true,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // right: the children stacked with spacing
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (int i = 0; i < children.length; i++) ...[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: i == children.length - 1 ? 0 : _subItemSpacing),
+                            child: children[i],
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }),
       ],
     );
   }
 
-  Widget buildDashedDivider() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      height: 1,
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: const Color(0xFFD5D5D5).withOpacity(0.5),
-            width: 1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPengaturanSection(String role) {
-    final isActive = widget.activeMenu == 'pengaturan';
-
-    return InkWell(
-      onTap: () {
-        _navigateTo('pengaturan');
-        if (role == 'guru') {
-          setState(() {
-            isPengaturanExpanded = !isPengaturanExpanded;
-          });
-        }
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-        decoration: BoxDecoration(
-          color: isActive ? AppColors.primaryBlue : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          children: [
-            Image.asset(
-              isActive
-                  ? 'assets/sidebar-icon/pengaturan-putih.png'
-                  : 'assets/sidebar-icon/pengaturan-hitam.png',
-              width: 20,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                'Pengaturan',
-                style: AppTextStyle.subtitle.copyWith(
-                  color: isActive ? AppColors.white : AppColors.black,
-                ),
-              ),
-            ),
-            if (role == 'guru')
-              AnimatedRotation(
-                turns: isPengaturanExpanded ? 0 : 0.5,
-                duration: const Duration(milliseconds: 300),
-                child: Image.asset(
-                  'assets/sidebar-icon/arrow-up.png',
-                  width: 16,
-                  color: isActive ? AppColors.white : AppColors.black,
-                ),
-              ),
-          ],
+  Widget buildDashedDividerHorizontal() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: CustomPaint(
+        size: const Size(151, 1),
+        painter: DashedLinePainter(
+          color: const Color(0xFFD5D5D5),
+          strokeWidth: 1,
+          dashWidth: 5,
+          dashSpace: 5,
+          vertical: false,
         ),
       ),
     );
@@ -283,7 +328,9 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                   iconPath: 'assets/sidebar-icon/bank-soal-hitam.png',
                   activeIconPath: 'assets/sidebar-icon/bank-soal-putih.png',
                 ),
-              buildDashedDivider(),
+              const SizedBox(height: 16),
+              buildDashedDividerHorizontal(),
+              const SizedBox(height: 16),
               Text('Sistem', style: AppTextStyle.subtitle),
               const SizedBox(height: 12),
               if (role == 'guru')
@@ -291,43 +338,42 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                   label: 'Langganan',
                   iconPath: 'assets/sidebar-icon/langganan-hitam.png',
                   expanded: isLanggananExpanded,
-                  onToggle: () => setState(() {
-                    isLanggananExpanded = !isLanggananExpanded;
-                  }),
+                  onToggle: () =>
+                      setState(() => isLanggananExpanded = !isLanggananExpanded),
                   children: [
                     buildMenuItem(
                       label: 'Paket',
                       menuKey: 'paket',
-                      isAsset: false,
+                      showDot: true,
                     ),
                     buildMenuItem(
                       label: 'Riwayat',
                       menuKey: 'riwayat',
-                      isAsset: false,
+                      showDot: true,
                     ),
                   ],
                 ),
-              if (role == 'guru') ...[
-                _buildPengaturanSection(role),
-                if (isPengaturanExpanded)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40),
-                    child: Column(
-                      children: [
-                        buildMenuItem(
-                          label: 'Kredensial',
-                          menuKey: 'kredensial',
-                          isAsset: false,
-                        ),
-                        buildMenuItem(
-                          label: 'Profil',
-                          menuKey: 'profil',
-                          isAsset: false,
-                        ),
-                      ],
+              if (role == 'guru')
+                buildExpandableSection(
+                  label: 'Pengaturan',
+                  iconPath: 'assets/sidebar-icon/pengaturan-hitam.png',
+                  expanded: isPengaturanExpanded,
+                  onToggle: () => setState(
+                      () => isPengaturanExpanded = !isPengaturanExpanded),
+                  children: [
+                    buildMenuItem(
+                      label: 'Kredensial',
+                      menuKey: 'kredensial',
+                      showDot: true,
                     ),
-                  ),
-              ] else ...[
+                    buildMenuItem(
+                      label: 'Profil',
+                      menuKey: 'profil',
+                      showDot: true,
+                    ),
+                  ],
+                ),
+              if (role != 'guru')
                 buildMenuItem(
                   label: 'Pengaturan',
                   menuKey: 'pengaturan',
@@ -335,11 +381,57 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                   iconPath: 'assets/sidebar-icon/pengaturan-hitam.png',
                   activeIconPath: 'assets/sidebar-icon/pengaturan-putih.png',
                 ),
-              ],
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class DashedLinePainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+  final double dashWidth;
+  final double dashSpace;
+  final bool vertical;
+
+  DashedLinePainter({
+    required this.color,
+    required this.strokeWidth,
+    required this.dashWidth,
+    required this.dashSpace,
+    this.vertical = true,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = strokeWidth
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.square;
+
+    double start = 0;
+    final length = vertical ? size.height : size.width;
+
+    if (vertical) {
+      final x = size.width / 2;
+      while (start < length) {
+        final end = (start + dashWidth).clamp(0.0, length);
+        canvas.drawLine(Offset(x, start), Offset(x, end), paint);
+        start += dashWidth + dashSpace;
+      }
+    } else {
+      final y = size.height / 2;
+      while (start < length) {
+        final end = (start + dashWidth).clamp(0.0, length);
+        canvas.drawLine(Offset(start, y), Offset(end, y), paint);
+        start += dashWidth + dashSpace;
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
