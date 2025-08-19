@@ -27,8 +27,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => const RegisterPage(),
-        '/dashboard': (context) => const HomePage(), // guru
-        '/dashboard-siswa': (context) => const DashboardPage(), // siswa
+        '/dashboard': (context) => const HomePage(), 
+        '/dashboard-siswa': (context) => const DashboardPage(), 
         '/daftar_ujian': (context) => const DaftarUjianPage(),
         '/bank_soal': (context) => const BankSoalPage(),
         '/paket': (context) => const DaftarPaketPage(),
