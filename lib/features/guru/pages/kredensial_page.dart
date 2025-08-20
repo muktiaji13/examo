@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class KredensialPage extends StatefulWidget {
   const KredensialPage({super.key});
@@ -64,49 +65,7 @@ class _KredensialPageState extends State<KredensialPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // AppBar
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 0,
-                                ),
-                                child: Container(
-                                  color: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 12,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: toggleSidebar,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          padding: const EdgeInsets.all(4),
-                                          child: Image.asset(
-                                            'assets/images/sidebar_icon.png',
-                                            height: 32,
-                                          ),
-                                        ),
-                                      ),
-                                      const Spacer(),
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(24),
-                                        child: Image.asset(
-                                          'assets/images/profile_pic.png',
-                                          height: 32,
-                                          width: 32,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              AppHeader(title: 'Kredensial', onMenuTap: toggleSidebar),
                               const SizedBox(height: 20),
 
                               // Title

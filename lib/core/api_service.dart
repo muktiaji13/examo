@@ -134,6 +134,30 @@ class ApiService {
     final user = await getCurrentUser();
     return user?.role ?? 'user';
   }
+
+  // Tambahkan fungsi stub untuk login dengan Google
+  static Future<User> loginWithGoogle() async {
+    // TODO: Implementasi Google Sign-In
+    // Simulasi user Google
+    return User(
+      id: 'google-id',
+      name: 'Google User',
+      email: 'googleuser@gmail.com',
+      role: 'user',
+    );
+  }
+
+  // Tambahkan fungsi stub untuk register dengan Google
+  static Future<User> registerWithGoogle() async {
+    // TODO: Implementasi Google Sign-In
+    // Simulasi user Google
+    return User(
+      id: 'google-id',
+      name: 'Google User',
+      email: 'googleuser@gmail.com',
+      role: 'user',
+    );
+  }
 }
 
 class User {

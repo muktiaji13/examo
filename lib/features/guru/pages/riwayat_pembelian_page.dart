@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/app_header.dart';
 
 // Provider state Riverpod
 final activeMenuProvider = StateProvider<String>((ref) => 'riwayat');
@@ -53,7 +54,7 @@ class RiwayatPembelianPage extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildAppBar(context, ref),
+                              AppHeader(title: 'Riwayat Pembelian', onMenuTap: () => ref.read(sidebarVisibleProvider.notifier).state = !ref.read(sidebarVisibleProvider)),
                               const SizedBox(height: 20),
                               _buildTitle(),
                               const SizedBox(height: 12),
@@ -102,41 +103,6 @@ class RiwayatPembelianPage extends ConsumerWidget {
                 },
                 onClose: () => ref.read(sidebarVisibleProvider.notifier).state = false,
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppBar(BuildContext context, WidgetRef ref) {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => ref.read(sidebarVisibleProvider.notifier).state =
-                !ref.read(sidebarVisibleProvider),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              padding: const EdgeInsets.all(4),
-              child: Image.asset('assets/images/sidebar_icon.png', height: 32),
-            ),
-          ),
-          const Spacer(),
-          Image.asset('assets/images/notif_icon.png', height: 24, width: 24),
-          const SizedBox(width: 16),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: Image.asset(
-              'assets/images/profile_pic.png',
-              height: 32,
-              width: 32,
-              fit: BoxFit.cover,
             ),
           ),
         ],

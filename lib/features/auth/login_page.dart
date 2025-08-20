@@ -86,6 +86,24 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
+  // Tambahkan fungsi login dengan Google
+  Future<void> _handleGoogleLogin() async {
+    setState(() => isLoading = true);
+    try {
+      // TODO: Integrasi Google Sign-In di sini
+      // Contoh: final user = await GoogleSignInApi.login();
+      // Setelah berhasil, arahkan ke dashboard sesuai role
+      _showErrorDialog('Login dengan Google berhasil!');
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      }
+    } catch (e) {
+      _showErrorDialog('Login dengan Google gagal: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => isLoading = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isPasswordVisible = ref.watch(passwordVisibilityProvider);
@@ -184,7 +202,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildSocialIcon('assets/auth-image/google.png'),
+                      GestureDetector(
+                        onTap: isLoading ? null : _handleGoogleLogin,
+                        child: _buildSocialIcon('assets/auth-image/google.png'),
+                      ),
                       const SizedBox(width: 12),
                       Text('Google', style: AppTextStyle.subtitle),
                     ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class SyaratKetentuanPage extends ConsumerWidget {
   const SyaratKetentuanPage({super.key});
@@ -12,30 +13,7 @@ class SyaratKetentuanPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFF5F5F5),
         body: Column(
           children: [
-            // AppBar
-            Container(
-              color: AppColors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset(
-                    'assets/images/sidebar_icon.png',
-                    width: 24,
-                    height: 24,
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/images/profile_pic.png',
-                      width: 32,
-                      height: 32,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            AppHeader(title: 'Syarat & Ketentuan'),
 
             // Main Content
             Expanded(

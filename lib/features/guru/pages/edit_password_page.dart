@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class EditPasswordPage extends StatefulWidget {
   const EditPasswordPage({super.key});
@@ -75,16 +76,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Navbar putih
-            Container(
-              height: 56,
-              width: double.infinity,
-              color: Colors.white,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child:
-                  const SizedBox(), // Bisa lu ganti jadi IconButton atau Title
-            ),
+            AppHeader(title: 'Ubah Password'),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

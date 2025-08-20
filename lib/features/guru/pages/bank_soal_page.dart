@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
-import 'bank_soal_detail_page.dart';
 
 class BankSoalItem {
   final String id;
@@ -634,48 +633,44 @@ class _BankSoalCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             item.title,
-            style: AppTextStyle.cardTitle.copyWith(
-              fontSize: 16,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
               fontWeight: FontWeight.w600,
+              fontSize: 16,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             item.subtitle,
-            style: AppTextStyle.cardSubtitle.copyWith(
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w400,
               fontSize: 14,
-              color: const Color(0xFF5E5E5E),
+              color: Color(0xFF5E5E5E),
             ),
           ),
           const SizedBox(height: 18),
           Row(
             children: [
               Expanded(
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => const BankSoalDetailPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: 36,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF0081FF), Color(0xFF025BB1)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  height: 36,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF0081FF), Color(0xFF025BB1)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
-                    child: Center(
-                      child: Text(
-                        'Detail',
-                        style: AppTextStyle.button.copyWith(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Detail',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
                     ),
                   ),

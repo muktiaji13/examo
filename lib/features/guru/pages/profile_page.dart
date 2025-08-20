@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/app_header.dart';
 import 'edit_profile_page.dart';
 import 'edit_password_page.dart';
 import 'bantuan_page.dart';
@@ -85,7 +86,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          _buildAppBar(),
+                          AppHeader(title: 'Profil', onMenuTap: toggleSidebar),
                           const SizedBox(height: 20),
                           _buildProfileCard(),
                           const SizedBox(height: 40),
@@ -255,21 +256,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: toggleSidebar,
-            child: Image.asset('assets/images/sidebar_icon.png', height: 32),
-          ),
         ],
       ),
     );

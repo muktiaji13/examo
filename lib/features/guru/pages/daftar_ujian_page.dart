@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import 'tambah_ujian_page.dart';
 
@@ -94,56 +95,7 @@ class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // AppBar
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 0,
-                                  ),
-                                  child: Container(
-                                    color: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 12,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: toggleSidebar,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            padding: const EdgeInsets.all(4),
-                                            child: Image.asset(
-                                              'assets/images/sidebar_icon.png',
-                                              height: 32,
-                                            ),
-                                          ),
-                                        ),
-                                        const Spacer(),
-                                        Image.asset(
-                                          'assets/images/notif_icon.png',
-                                          height: 24,
-                                          width: 24,
-                                        ),
-                                        const SizedBox(width: 16),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            24,
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/profile_pic.png',
-                                            height: 32,
-                                            width: 32,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                AppHeader(title: 'Daftar Ujian', onMenuTap: toggleSidebar),
                                 const SizedBox(height: 20),
 
                                 // Title

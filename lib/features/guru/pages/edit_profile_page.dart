@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -73,12 +74,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           body: SafeArea(
             child: Column(
               children: [
-                Container(
-                  height: 50,
-                  color: Colors.white,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                ),
+                AppHeader(title: 'Edit Profil'),
                 Expanded(
                   child: Center(
                     child: Container(

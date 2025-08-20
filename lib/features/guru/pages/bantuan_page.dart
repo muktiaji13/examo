@@ -1,6 +1,7 @@
 // pages/bantuan_page.dart
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class BantuanPage extends StatefulWidget {
   const BantuanPage({super.key});
@@ -19,22 +20,7 @@ class _BantuanPageState extends State<BantuanPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // Navbar putih di atas
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              width: double.infinity,
-              color: AppColors.white,
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(Icons.menu, color: Colors.black),
-                  CircleAvatar(
-                    radius: 16,
-                    backgroundImage: AssetImage('assets/images/profile_pic.png'), // opsional
-                  ),
-                ],
-              ),
-            ),
+            AppHeader(title: 'Bantuan'),
 
             // Card besar pembungkus konten
             Expanded(

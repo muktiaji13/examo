@@ -1,7 +1,7 @@
-// exam_detail_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 final examDetailProvider = Provider<ExamDetail>((ref) {
   return ExamDetail(
@@ -64,14 +64,7 @@ class ExamDetailPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset('assets/images/sidebar_icon.png', width: 24, height: 24),
-                  Image.asset('assets/images/profile_pic.png', width: 36, height: 36),
-                ],
-              ),
+              AppHeader(title: 'Detail Ujian', showBack: true),
               const SizedBox(height: 16),
 
               // Detail Ujian title + back

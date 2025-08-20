@@ -143,6 +143,44 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
                             : Text('Register', style: AppTextStyle.button),
                       ),
                     ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(width: 40, height: 1, color: Colors.grey),
+                        const SizedBox(width: 8),
+                        Text('Atau Register Dengan', style: AppTextStyle.subtitle),
+                        const SizedBox(width: 8),
+                        Container(width: 40, height: 1, color: Colors.grey),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: isLoading ? null : _handleGoogleRegister,
+                          child: _buildSocialIcon('assets/auth-image/google.png'),
+                        ),
+                        const SizedBox(width: 12),
+                        Text('Google', style: AppTextStyle.subtitle),
+                      ],
+                    ),
+                    const SizedBox(height: 32),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Sudah punya akun?', style: AppTextStyle.subtitle),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () => Navigator.pushReplacementNamed(
+                            context,
+                            '/login',
+                          ),
+                          child: Text('Masuk', style: AppTextStyle.link),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -247,6 +285,24 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       if (mounted) {
         setState(() => isLoading = false);
       }
+    }
+  }
+
+  // Tambahkan fungsi register dengan Google
+  Future<void> _handleGoogleRegister() async {
+    setState(() => isLoading = true);
+    try {
+      // TODO: Integrasi Google Sign-In di sini
+      // Contoh: final user = await GoogleSignInApi.register();
+      // Setelah berhasil, arahkan ke dashboard atau halaman login
+      _showMessage(context, 'Registrasi dengan Google berhasil!', isSuccess: true);
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } catch (e) {
+      _showMessage(context, 'Registrasi dengan Google gagal: ${e.toString()}');
+    } finally {
+      if (mounted) setState(() => isLoading = false);
     }
   }
 
@@ -383,6 +439,14 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildSocialIcon(String assetPath) {
+    return CircleAvatar(
+      backgroundColor: Colors.white,
+      radius: 22,
+      child: Image.asset(assetPath, height: 24, width: 24),
     );
   }
 

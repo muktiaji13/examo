@@ -624,7 +624,9 @@ class QuestionCard extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: green, width: 1)),
+                border: Border(
+                  bottom: BorderSide(color: green, width: 1),
+                ),
               ),
               child: Text(
                 ref.read(bankSoalProvider).essayAnswers[question.id] ?? '-',

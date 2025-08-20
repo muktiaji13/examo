@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/app_header.dart';
 
 class DashboardPage extends ConsumerStatefulWidget {
   const DashboardPage({super.key});
@@ -66,7 +67,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           SafeArea(
             child: Column(
               children: [
-                _buildTopBar(),
+                AppHeader(title: 'Dashboard Siswa', onMenuTap: toggleSidebar),
                 Expanded(
                   child: Center(
                     child: ConstrainedBox(
@@ -119,41 +120,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
                 onMenuTap: (menu) {},
                 onClose: closeSidebar,
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTopBar() {
-    return Container(
-      height: 70,
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x1A000000),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: toggleSidebar,
-            child: Image.asset('assets/images/sidebar_icon.png', width: 24, height: 24),
-          ),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: Image.asset(
-              'assets/images/profile_pic2.png',
-              width: 36,
-              height: 36,
             ),
           ),
         ],

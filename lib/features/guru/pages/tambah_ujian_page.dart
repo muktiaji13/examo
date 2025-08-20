@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import 'daftar_ujian_page.dart';
 import 'exam_detail_page.dart';
+import '../../../shared/widgets/app_header.dart';
 
 final ujianProvider = StateProvider<Map<String, dynamic>>((ref) => {
       "judul": "",
@@ -29,30 +30,7 @@ class TambahUjianPage extends ConsumerWidget {
             constraints: const BoxConstraints(maxWidth: AppLayout.maxWidth),
             child: Column(
               children: [
-                // === APP BAR CUSTOM ===
-                Container(
-                  width: double.infinity,
-                  height: 70,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: AppColors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        offset: const Offset(0, 2),
-                        blurRadius: 5,
-                      )
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Image.asset("assets/images/sidebar_icon.png", width: 24),
-                      Image.asset("assets/images/profile_pic.png", width: 36),
-                    ],
-                  ),
-                ),
-
+                AppHeader(title: 'Tambah Ujian', showBack: true),
                 // === BODY ===
                 Expanded(
                   child: SingleChildScrollView(
