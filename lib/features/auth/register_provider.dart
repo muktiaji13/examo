@@ -77,6 +77,7 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
         role: state.selectedRole.toLowerCase() == 'siswa' ? 'user' : 'guru',
       );
 
+      // ignore: unnecessary_null_comparison
       if (user != null) {
         await ref.read(authProvider.notifier).login(email, password);
       }

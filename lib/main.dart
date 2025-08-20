@@ -7,6 +7,7 @@ import 'features/siswa/pages/pengaturan_page.dart';
 import 'features/guru/pages/dashboard_page.dart';
 import 'features/guru/pages/daftar_ujian_page.dart';
 import 'features/guru/pages/bank_soal_page.dart';
+import 'features/guru/pages/bank_soal_detail_page.dart';
 import 'features/guru/pages/daftar_paket_page.dart';
 import 'features/guru/pages/riwayat_pembelian_page.dart';
 import 'features/guru/pages/kredensial_page.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MyApp',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: BankSoalPage(),
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => const RegisterPage(),
@@ -31,12 +32,13 @@ class MyApp extends StatelessWidget {
         '/dashboard-siswa': (context) => const DashboardPage(), 
         '/daftar_ujian': (context) => const DaftarUjianPage(),
         '/bank_soal': (context) => const BankSoalPage(),
+        '/bank_soal_detail': (context) => const BankSoalDetailPage(),
         '/paket': (context) => const DaftarPaketPage(),
         '/riwayat': (context) => const RiwayatPembelianPage(),
         '/kredensial': (context) => const KredensialPage(),
         '/profil': (context) => const ProfilePage(),
         '/pengaturan': (context) => const PengaturanPage(),
-        '/exam-detail-page': (context) => const ExamDetailPage(),
+        '/detail_ujian': (context) => const ExamDetailPage(),
       },
     );
   }

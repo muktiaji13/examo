@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/styles.dart';
 import 'reset_password_page.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+final emailProvider = StateProvider<String>((ref) => '');
+
+class ForgotPasswordPage extends ConsumerWidget {
   const ForgotPasswordPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email = ref.watch(emailProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Center(
@@ -16,7 +21,7 @@ class ForgotPasswordPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end, // teks end
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const Align(
                   alignment: Alignment.centerLeft,
@@ -58,6 +63,8 @@ class ForgotPasswordPage extends StatelessWidget {
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) =>
+                      ref.read(emailProvider.notifier).state = value,
                 ),
                 const SizedBox(height: 24),
                 SizedBox(
@@ -70,15 +77,17 @@ class ForgotPasswordPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    onPressed: () {
-                      // contoh langsung navigasi (nanti lu ganti sesuai backend lu)
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ResetPasswordPage(),
-                        ),
-                      );
-                    },
+                    onPressed: email.isEmpty
+                        ? null // disable button kalau email kosong
+                        : () {
+                            // nanti di sini bisa ditambah validasi/logic backend
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ResetPasswordPage(),
+                              ),
+                            );
+                          },
                     child: Text('Reset Password', style: AppTextStyle.button),
                   ),
                 ),
