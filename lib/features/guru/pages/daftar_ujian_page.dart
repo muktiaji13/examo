@@ -95,7 +95,7 @@ class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AppHeader(title: 'Daftar Ujian', onMenuTap: toggleSidebar),
+                                AppHeader(onMenuTap: toggleSidebar),
                                 const SizedBox(height: 20),
 
                                 // Title

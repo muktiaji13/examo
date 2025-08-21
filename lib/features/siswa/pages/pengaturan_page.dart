@@ -86,7 +86,7 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          AppHeader(title: 'Pengaturan', onMenuTap: toggleSidebar),
+                          AppHeader(onMenuTap: toggleSidebar),
                           const SizedBox(height: 20),
                           _buildProfileCard(),
                           const SizedBox(height: 40),

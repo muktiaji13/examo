@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../config/styles.dart';
 
 class AppHeader extends StatelessWidget {
-  final String? title;
   final bool showBack;
   final VoidCallback? onBack;
   final VoidCallback? onMenuTap;
@@ -11,7 +10,6 @@ class AppHeader extends StatelessWidget {
 
   const AppHeader({
     super.key,
-    this.title,
     this.showBack = false,
     this.onBack,
     this.onMenuTap,
@@ -68,16 +66,7 @@ class AppHeader extends StatelessWidget {
                   ),
                 ),
               ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title ?? '',
-                style: AppTextStyle.title.copyWith(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+            const Spacer(),
             Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(

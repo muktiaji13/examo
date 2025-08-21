@@ -86,7 +86,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage>
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          AppHeader(title: 'Profil', onMenuTap: toggleSidebar),
+                          AppHeader(onMenuTap: toggleSidebar),
                           const SizedBox(height: 20),
                           _buildProfileCard(),
                           const SizedBox(height: 40),

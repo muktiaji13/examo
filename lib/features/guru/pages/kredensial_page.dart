@@ -65,7 +65,7 @@ class _KredensialPageState extends State<KredensialPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppHeader(title: 'Kredensial', onMenuTap: toggleSidebar),
+                              AppHeader(onMenuTap: toggleSidebar),
                               const SizedBox(height: 20),
 
                               // Title

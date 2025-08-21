@@ -64,7 +64,7 @@ class ExamDetailPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppHeader(title: 'Detail Ujian', showBack: true),
+              AppHeader(showBack: true),
               const SizedBox(height: 16),
 
               // Detail Ujian title + back

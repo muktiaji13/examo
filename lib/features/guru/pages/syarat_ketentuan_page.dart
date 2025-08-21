@@ -13,7 +13,7 @@ class SyaratKetentuanPage extends ConsumerWidget {
         backgroundColor: const Color(0xFFF5F5F5),
         body: Column(
           children: [
-            AppHeader(title: 'Syarat & Ketentuan'),
+            AppHeader(),
 
             // Main Content
             Expanded(

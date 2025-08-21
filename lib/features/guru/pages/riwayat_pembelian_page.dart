@@ -54,7 +54,7 @@ class RiwayatPembelianPage extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppHeader(title: 'Riwayat Pembelian', onMenuTap: () => ref.read(sidebarVisibleProvider.notifier).state = !ref.read(sidebarVisibleProvider)),
+                              AppHeader(onMenuTap: () => ref.read(sidebarVisibleProvider.notifier).state = !ref.read(sidebarVisibleProvider)),
                               const SizedBox(height: 20),
                               _buildTitle(),
                               const SizedBox(height: 12),

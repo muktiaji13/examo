@@ -76,7 +76,7 @@ class _EditPasswordPageState extends State<EditPasswordPage> {
       body: SafeArea(
         child: Column(
           children: [
-            AppHeader(title: 'Ubah Password'),
+            AppHeader(),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),

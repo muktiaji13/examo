@@ -30,7 +30,7 @@ class TambahUjianPage extends ConsumerWidget {
             constraints: const BoxConstraints(maxWidth: AppLayout.maxWidth),
             child: Column(
               children: [
-                AppHeader(title: 'Tambah Ujian', showBack: true),
+                AppHeader(showBack: true),
                 // === BODY ===
                 Expanded(
                   child: SingleChildScrollView(

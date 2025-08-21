@@ -91,7 +91,6 @@ class _HomePageState extends State<HomePage> {
                               children: [
                                 // Ganti navbar lama dengan AppHeader
                                 AppHeader(
-                                  title: 'Dashboard',
                                   onMenuTap: toggleSidebar,
                                 ),
                                 const SizedBox(height: 20),

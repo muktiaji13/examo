@@ -74,7 +74,7 @@ class _EditProfilePageState extends State<EditProfilePage>
           body: SafeArea(
             child: Column(
               children: [
-                AppHeader(title: 'Edit Profil'),
+                AppHeader(),
                 Expanded(
                   child: Center(
                     child: Container(

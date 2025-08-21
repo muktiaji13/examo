@@ -67,7 +67,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
           SafeArea(
             child: Column(
               children: [
-                AppHeader(title: 'Dashboard Siswa', onMenuTap: toggleSidebar),
+                AppHeader(onMenuTap: toggleSidebar),
                 Expanded(
                   child: Center(
                     child: ConstrainedBox(

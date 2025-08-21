@@ -1,4 +1,3 @@
-// pages/bantuan_page.dart
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -20,7 +19,7 @@ class _BantuanPageState extends State<BantuanPage> {
       body: SafeArea(
         child: Column(
           children: [
-            AppHeader(title: 'Bantuan'),
+            AppHeader(),
 
             // Card besar pembungkus konten
             Expanded(
