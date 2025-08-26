@@ -64,10 +64,9 @@ class ExamDetailPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppHeader(showBack: true),
+              AppHeader(showBack: false),
               const SizedBox(height: 16),
 
-              // Detail Ujian title + back
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -88,7 +87,6 @@ class ExamDetailPage extends ConsumerWidget {
               ),
               const SizedBox(height: 16),
 
-              // Card Detail Ujian
               Container(
                 width: double.infinity,
                 decoration: BoxDecoration(

@@ -241,38 +241,44 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
             ),
           ),
         ),
-        if (expanded)
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-
-                    // right: the children stacked with spacing
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          for (int i = 0; i < children.length; i++) ...[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                bottom: i == children.length - 1
-                                    ? 0
-                                    : _subItemSpacing,
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (child, animation) {
+            return SizeTransition(
+              sizeFactor: animation,
+              axisAlignment: -1.0,
+              child: FadeTransition(opacity: animation, child: child),
+            );
+          },
+          child: expanded
+              ? Padding(
+                  key: const ValueKey(true),
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            for (int i = 0; i < children.length; i++) ...[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  bottom: i == children.length - 1
+                                      ? 0
+                                      : _subItemSpacing,
+                                ),
+                                child: children[i],
                               ),
-                              child: children[i],
-                            ),
+                            ],
                           ],
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                    ],
+                  ),
+                )
+              : const SizedBox.shrink(key: ValueKey(false)),
+        ),
       ],
     );
   }

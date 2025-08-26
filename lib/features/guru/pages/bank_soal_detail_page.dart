@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/app_header.dart';
 
 // -------------------- Models --------------------
 enum QuestionType { single, multiple, imageSingle, essay }
@@ -155,7 +156,7 @@ class BankSoalDetailPage extends ConsumerWidget {
     final daftarSoalStyle = AppTextStyle.cardTitle.copyWith(
       fontWeight: FontWeight.w500,
     );
-    final kembaliStyle = AppTextStyle.inputText.copyWith(
+    final kembaliStyle = AppTextStyle.blackSubtitle.copyWith(
       fontSize: 13,
       fontWeight: FontWeight.w400,
       height: 18 / 13,
@@ -170,9 +171,10 @@ class BankSoalDetailPage extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: [
-            _TopBar(),
+            AppHeader(),
             Expanded(
               child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 6,
@@ -182,7 +184,7 @@ class BankSoalDetailPage extends ConsumerWidget {
                   children: [
                     const SizedBox(height: 16),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      padding: const EdgeInsets.symmetric(),
                       child: Row(
                         children: [
                           Expanded(
@@ -227,26 +229,34 @@ class BankSoalDetailPage extends ConsumerWidget {
                                       onTap: () => ref
                                           .read(bankSoalProvider.notifier)
                                           .toggleShowAnswers(),
-                                      child: Container(
+                                      child: AnimatedContainer(
+                                        duration: const Duration(
+                                          milliseconds: 200,
+                                        ),
+                                        curve: Curves.easeInOut,
                                         width: 46,
                                         height: 26,
                                         padding: const EdgeInsets.all(3),
                                         decoration: BoxDecoration(
                                           color: state.showAnswers
-                                              ? Color(0xFF2ECC71)
-                                              : Color(0xFFD5D5D5),
+                                              ? const Color(0xFF2ECC71)
+                                              : const Color(0xFFD5D5D5),
                                           borderRadius: BorderRadius.circular(
                                             20,
                                           ),
                                         ),
-                                        child: Align(
+                                        child: AnimatedAlign(
+                                          duration: const Duration(
+                                            milliseconds: 200,
+                                          ),
+                                          curve: Curves.easeInOut,
                                           alignment: state.showAnswers
                                               ? Alignment.centerRight
                                               : Alignment.centerLeft,
                                           child: Container(
                                             width: 20,
                                             height: 20,
-                                            decoration: BoxDecoration(
+                                            decoration: const BoxDecoration(
                                               color: Colors.white,
                                               shape: BoxShape.circle,
                                             ),
@@ -309,43 +319,6 @@ class BankSoalDetailPage extends ConsumerWidget {
   }
 }
 
-class _TopBar extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 80,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x1A000000),
-            offset: Offset(0, 2),
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
-        child: Row(
-          children: [
-            Image.asset(
-              'assets/images/sidebar_icon.png',
-              width: 26,
-              height: 26,
-            ),
-            const Spacer(),
-            CircleAvatar(
-              radius: 18,
-              backgroundImage: AssetImage('assets/images/profile_pic.png'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _BackButtonWidget extends StatelessWidget {
   final TextStyle? style;
   const _BackButtonWidget({this.style});
@@ -361,14 +334,14 @@ class _BackButtonWidget extends StatelessWidget {
           color: AppColors.white,
           borderRadius: BorderRadius.circular(5),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Row(
           children: [
             Image.asset('assets/images/arrow-back.png', width: 16, height: 16),
             const SizedBox(width: 6),
             Text(
               'Kembali',
-              style: style ?? AppTextStyle.inputText.copyWith(fontSize: 13),
+              style: style ?? AppTextStyle.blackSubtitle.copyWith(fontSize: 13),
             ),
           ],
         ),
@@ -382,7 +355,6 @@ class _CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 120,
       decoration: BoxDecoration(
         color: Color(0x1A0081FF),
         borderRadius: BorderRadius.circular(10),
@@ -395,31 +367,40 @@ class _CourseCard extends StatelessWidget {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(width: 16),
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: AppColors.roleButtonSelected,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: Center(
-              child: Image.asset(
-                'assets/images/book.png',
-                width: 14,
-                height: 16,
-                color: AppColors.white,
+
+          /// icon buku
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              margin: const EdgeInsets.only(top: 15),
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: AppColors.roleButtonSelected,
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/images/book.png',
+                  width: 14,
+                  height: 16,
+                  color: AppColors.white,
+                ),
               ),
             ),
           ),
+
           const SizedBox(width: 12),
+
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              padding: const EdgeInsets.symmetric(vertical: 15.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     'Informatika',
@@ -515,13 +496,16 @@ class QuestionCard extends ConsumerWidget {
                 ),
               );
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            radioWidget,
-            const SizedBox(width: 12),
-            Expanded(child: optionContent),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              radioWidget,
+              const SizedBox(width: 12),
+              Expanded(child: optionContent),
+            ],
+          ),
         );
       } else {
         final isCorrect = o.isCorrect;
@@ -557,13 +541,16 @@ class QuestionCard extends ConsumerWidget {
           ),
         );
 
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            checkboxWidget,
-            const SizedBox(width: 12),
-            Expanded(child: optionContent),
-          ],
+        return Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              checkboxWidget,
+              const SizedBox(width: 12),
+              Expanded(child: optionContent),
+            ],
+          ),
         );
       }
     }
@@ -620,21 +607,26 @@ class QuestionCard extends ConsumerWidget {
         if (question.type == QuestionType.essay) ...[
           const SizedBox(height: 8),
           if (showAnswers)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: green, width: 1),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 18),
+                  child: Text(
+                    ref.read(bankSoalProvider).essayAnswers[question.id] ?? '-',
+                    style: AppTextStyle.inputText.copyWith(
+                      fontSize: 14,
+                      color: const Color(0xFF505050),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                ref.read(bankSoalProvider).essayAnswers[question.id] ?? '-',
-                style: AppTextStyle.inputText.copyWith(
-                  fontSize: 14,
-                  color: Color(0xFF505050),
+                Container(
+                  margin: const EdgeInsets.only(left: 18, right: 18),
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: green, width: 1)),
+                  ),
                 ),
-              ),
+              ],
             ),
         ],
       ],

@@ -89,7 +89,6 @@ class _HomePageState extends State<HomePage> {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                // Ganti navbar lama dengan AppHeader
                                 AppHeader(
                                   onMenuTap: toggleSidebar,
                                 ),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
+import 'detail_paket_page.dart';
 
 /// Model Paket
 class Paket {
@@ -127,9 +128,9 @@ class _DaftarPaketPageState extends ConsumerState<DaftarPaketPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppHeader(),
+                              AppHeader(onMenuTap: toggleSidebar),
+                              const SizedBox(height: 16),
 
-                              // Judul
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 20,
@@ -415,18 +416,23 @@ class PaketCard extends StatelessWidget {
 
                   // Tombol langganan
                   GestureDetector(
-                    onTap: paket.isActive ? onSubscribe : null,
+                    onTap: () {
+                      DetailPaketPage.go(
+                        context,
+                        status: SubscriptionStatus.payNow,
+                      );
+                    },
                     child: Container(
                       width: double.infinity,
                       height: 35,
                       decoration: BoxDecoration(
-                        color: buttonBg,
+                        color: buttonBg, // dari styles.dart lu
                         borderRadius: BorderRadius.circular(6),
                       ),
                       alignment: Alignment.center,
                       child: Text(
                         'Langganan',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w600,
                           fontSize: 14,

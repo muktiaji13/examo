@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/app_header.dart';
 import 'bank_soal_detail_page.dart';
 
 class BankSoalItem {
@@ -225,33 +226,7 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProvider
                   child: SafeArea(
                     child: Column(
                       children: [
-                        Container(
-                          height: 100,
-                          color: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: toggleSidebar,
-                                child: Image.asset(
-                                  'assets/images/sidebar_icon.png',
-                                  height: 32,
-                                  width: 32,
-                                ),
-                              ),
-                              const Spacer(),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(24),
-                                child: Image.asset(
-                                  'assets/images/profile_pic.png',
-                                  height: 32,
-                                  width: 32,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        AppHeader(onMenuTap: toggleSidebar),
                         Expanded(
                           child: SingleChildScrollView(
                             child: Padding(

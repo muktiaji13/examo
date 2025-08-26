@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'detail_paket_page.dart';
 
 // Provider state Riverpod
 final activeMenuProvider = StateProvider<String>((ref) => 'riwayat');
@@ -17,7 +19,7 @@ final pembelianProvider = Provider<List<Map<String, dynamic>>>((ref) {
       "durasi": "1 Bulan",
       "tglMulai": index % 2 == 0 ? "01 Mei 2025" : "01 April 2025",
       "tglAkhir": index % 2 == 0 ? "1 Juni 2025" : "1 Mei 2025",
-      "status": ["Tuntas", "Pending", "Kadaluarsa"][index % 3]
+      "status": ["Tuntas", "Pending", "Kadaluarsa"][index % 3],
     };
   });
 });
@@ -32,7 +34,9 @@ class RiwayatPembelianPage extends ConsumerWidget {
     final isWideScreen = screenWidth > 1000;
     final sidebarWidth = isWideScreen ? 300.0 : 240.0;
     final sidebarLeftPosition = isSidebarVisible ? 0.0 : -sidebarWidth;
-    final mainContentLeftPadding = isSidebarVisible && isWideScreen ? sidebarWidth : 0.0;
+    final mainContentLeftPadding = isSidebarVisible && isWideScreen
+        ? sidebarWidth
+        : 0.0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -49,12 +53,21 @@ class RiwayatPembelianPage extends ConsumerWidget {
                     child: Align(
                       alignment: Alignment.topCenter,
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: AppLayout.maxWidth),
+                        constraints: BoxConstraints(
+                          maxWidth: AppLayout.maxWidth,
+                        ),
                         child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AppHeader(onMenuTap: () => ref.read(sidebarVisibleProvider.notifier).state = !ref.read(sidebarVisibleProvider)),
+                              AppHeader(
+                                onMenuTap: () =>
+                                    ref
+                                        .read(sidebarVisibleProvider.notifier)
+                                        .state = !ref.read(
+                                      sidebarVisibleProvider,
+                                    ),
+                              ),
                               const SizedBox(height: 20),
                               _buildTitle(),
                               const SizedBox(height: 12),
@@ -75,7 +88,8 @@ class RiwayatPembelianPage extends ConsumerWidget {
           ),
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
-              onTap: () => ref.read(sidebarVisibleProvider.notifier).state = false,
+              onTap: () =>
+                  ref.read(sidebarVisibleProvider.notifier).state = false,
               child: AnimatedOpacity(
                 duration: const Duration(milliseconds: 300),
                 opacity: isSidebarVisible ? 1 : 0,
@@ -101,7 +115,8 @@ class RiwayatPembelianPage extends ConsumerWidget {
                   ref.read(activeMenuProvider.notifier).state = menuKey;
                   ref.read(sidebarVisibleProvider.notifier).state = false;
                 },
-                onClose: () => ref.read(sidebarVisibleProvider.notifier).state = false,
+                onClose: () =>
+                    ref.read(sidebarVisibleProvider.notifier).state = false,
               ),
             ),
           ),
@@ -139,7 +154,7 @@ class RiwayatPembelianPage extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(12), // <- biar lebih melengkung
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: Row(
@@ -156,45 +171,90 @@ class RiwayatPembelianPage extends ConsumerWidget {
     final data = ref.watch(pembelianProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFEBEBEB)),
-          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 3)],
-        ),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            headingRowColor: MaterialStateProperty.all(const Color(0xFF0081FF)),
-            headingTextStyle: const TextStyle(
-              fontFamily: 'Poppins',
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              color: Colors.white,
-            ),
-            dataTextStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
-            columns: const [
-              DataColumn(label: Center(child: Text('No'))),
-              DataColumn(label: Center(child: Text('Nama Paket'))),
-              DataColumn(label: Center(child: Text('Durasi'))),
-              DataColumn(label: Center(child: Text('Tanggal Mulai'))),
-              DataColumn(label: Center(child: Text('Tanggal Berakhir'))),
-              DataColumn(label: Center(child: Text('Status'))),
-              DataColumn(label: Center(child: Text('Aksi'))),
+      child: ClipRRect(
+        // <- biar sudut beneran melengkung
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: const Color(0xFFEBEBEB)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 3,
+                offset: const Offset(0, 2),
+              ),
             ],
-            rows: data.map((item) {
-              return DataRow(cells: [
-                DataCell(Center(child: Text(item['no'].toString()))),
-                DataCell(Center(child: Text(item['namaPaket']))),
-                DataCell(Center(child: Text(item['durasi']))),
-                DataCell(Center(child: Text(item['tglMulai']))),
-                DataCell(Center(child: Text(item['tglAkhir']))),
-                DataCell(Center(child: _statusBadge(item['status']))),
-                DataCell(Center(
-                  child: Icon(Icons.remove_red_eye, color: const Color(0xFFF8BD00), size: 21),
-                )),
-              ]);
-            }).toList(),
+          ),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              headingRowColor: MaterialStateProperty.all(
+                const Color(0xFF0081FF),
+              ),
+              headingTextStyle: const TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: Colors.white,
+              ),
+              dataTextStyle: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 14,
+              ),
+              columns: const [
+                DataColumn(label: Text('No')),
+                DataColumn(label: Text('Nama Paket')),
+                DataColumn(label: Text('Durasi')),
+                DataColumn(label: Text('Tanggal Mulai')),
+                DataColumn(label: Text('Tanggal Berakhir')),
+                DataColumn(label: Text('Status')),
+                DataColumn(label: Text('Aksi')),
+              ],
+              rows: data.map((item) {
+                return DataRow(
+                  cells: [
+                    DataCell(Text(item['no'].toString())),
+                    DataCell(Text(item['namaPaket'])),
+                    DataCell(Text(item['durasi'])),
+                    DataCell(Text(item['tglMulai'])),
+                    DataCell(Text(item['tglAkhir'])),
+                    DataCell(
+                      Align(
+                        // <- biar badge rata kiri kayak header
+                        alignment: Alignment.centerLeft,
+                        child: _statusBadge(item['status']),
+                      ),
+                    ),
+                    DataCell(
+                      GestureDetector(
+                        onTap: () {
+                          final statusString = item['status'] as String;
+                          SubscriptionStatus status;
+                          if (statusString == 'Tuntas') {
+                            status = SubscriptionStatus.active;
+                          } else if (statusString == 'Pending') {
+                            status = SubscriptionStatus.pending;
+                          } else {
+                            status = SubscriptionStatus.expired;
+                          }
+
+                          DetailPaketPage.go(context, status: status);
+                        },
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Icon(
+                            TablerIcons.eye_search,
+                            color: Color(0xFFF8BD00),
+                            size: 21,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
           ),
         ),
       ),
@@ -215,24 +275,30 @@ class RiwayatPembelianPage extends ConsumerWidget {
       textColor = const Color(0xFF717171);
     }
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(color: bgColor, borderRadius: BorderRadius.circular(6)),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(20), // <- lebih oval biar cakep
+      ),
       child: Text(status, style: TextStyle(color: textColor, fontSize: 12)),
     );
   }
 
   Widget _buildPagination() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _pageButton('<', false),
-        const SizedBox(width: 4),
-        _pageButton('1', true),
-        const SizedBox(width: 4),
-        _pageButton('2', false),
-        const SizedBox(width: 4),
-        _pageButton('>', false),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 32), // <- tambahin jarak bawah
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _pageButton('<', false),
+          const SizedBox(width: 4),
+          _pageButton('1', true),
+          const SizedBox(width: 4),
+          _pageButton('2', false),
+          const SizedBox(width: 4),
+          _pageButton('>', false),
+        ],
+      ),
     );
   }
 

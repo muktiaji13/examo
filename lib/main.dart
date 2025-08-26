@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MyApp',
       debugShowCheckedModeBanner: false,
-      home: BankSoalPage(),
+      home: HomePage(),
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => const RegisterPage(),
