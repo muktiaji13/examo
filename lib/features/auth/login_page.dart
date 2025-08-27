@@ -50,7 +50,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       final user = await ApiService.loginUser(email: email, password: password);
       final role = user.role;
 
-      // Update authProvider state
       await ref.read(authProvider.notifier).login(email, password);
 
       // Navigasi menggunakan route agar rebuild sesuai role
@@ -86,13 +85,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  // Tambahkan fungsi login dengan Google
   Future<void> _handleGoogleLogin() async {
     setState(() => isLoading = true);
     try {
-      // TODO: Integrasi Google Sign-In di sini
-      // Contoh: final user = await GoogleSignInApi.login();
-      // Setelah berhasil, arahkan ke dashboard sesuai role
+      // TODO: Integrasi Google Sign-In
       _showErrorDialog('Login dengan Google berhasil!');
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/dashboard');
@@ -145,7 +141,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     hintText: 'Password',
                     errorText:
                         authError ??
-                        passwordError, // Show auth error here if exists
+                        passwordError,
                     isPassword: true,
                     isVisible: isPasswordVisible,
                     onToggleVisibility: () {
