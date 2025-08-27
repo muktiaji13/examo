@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/styles.dart';
 
-class AppHeader extends StatelessWidget {
+// contoh provider untuk profilePic
+final profilePicProvider = StateProvider<String?>((ref) => null);
+
+class AppHeader extends ConsumerWidget {
   final bool showBack;
   final VoidCallback? onBack;
   final VoidCallback? onMenuTap;
-  final String? profilePic;
   final double height;
 
   const AppHeader({
@@ -13,12 +16,13 @@ class AppHeader extends StatelessWidget {
     this.showBack = false,
     this.onBack,
     this.onMenuTap,
-    this.profilePic,
     this.height = 80,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profilePic = ref.watch(profilePicProvider);
+
     return Container(
       height: height,
       width: double.infinity,
