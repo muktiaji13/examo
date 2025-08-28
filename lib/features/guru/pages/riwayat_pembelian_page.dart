@@ -192,14 +192,11 @@ class RiwayatPembelianPage extends ConsumerWidget {
               headingRowColor: MaterialStateProperty.all(
                 const Color(0xFF0081FF),
               ),
-              headingTextStyle: const TextStyle(
-                fontFamily: 'Poppins',
+              headingTextStyle: AppTextStyle.cardTitleWhite.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
-                color: Colors.white,
               ),
-              dataTextStyle: const TextStyle(
-                fontFamily: 'Poppins',
+              dataTextStyle: AppTextStyle.blackSubtitle.copyWith(
                 fontSize: 14,
               ),
               columns: const [
@@ -314,8 +311,7 @@ class RiwayatPembelianPage extends ConsumerWidget {
       child: Center(
         child: Text(
           text,
-          style: TextStyle(
-            fontFamily: 'Poppins',
+          style: AppTextStyle.blackSubtitle.copyWith(
             fontWeight: FontWeight.w500,
             fontSize: 16,
             color: active ? Colors.white : const Color(0xFFD1D1D1),
