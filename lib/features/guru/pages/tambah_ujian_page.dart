@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import 'daftar_ujian_page.dart';
-import 'exam_detail_page.dart';
+import 'detail_ujian_page.dart';
 import '../../../shared/widgets/app_header.dart';
 
 final ujianProvider = StateProvider<Map<String, dynamic>>((ref) => {

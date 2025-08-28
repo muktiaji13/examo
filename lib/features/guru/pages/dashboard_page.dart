@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../pages/exam_detail_page.dart'; 
+import 'detail_ujian_page.dart'; 
 
 class GuruDashboardPage extends StatefulWidget {
   const GuruDashboardPage({Key? key}) : super(key: key);
