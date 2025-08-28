@@ -25,11 +25,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MyApp',
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      home: GuruDashboardPage(),
       routes: {
         '/login': (context) => LoginPage(),
         '/register': (context) => const RegisterPage(),
-        '/dashboard': (context) => const HomePage(), 
+        '/dashboard': (context) => const GuruDashboardPage(), 
         '/dashboard-siswa': (context) => const DashboardPage(), 
         '/daftar_ujian': (context) => const DaftarUjianPage(),
         '/bank_soal': (context) => const BankSoalPage(),

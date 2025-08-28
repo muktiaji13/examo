@@ -4,14 +4,14 @@ import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../pages/exam_detail_page.dart'; 
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class GuruDashboardPage extends StatefulWidget {
+  const GuruDashboardPage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<GuruDashboardPage> createState() => _GuruDashboardPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _GuruDashboardPageState extends State<GuruDashboardPage> {
   String activeMenu = 'dashboard';
   bool isSidebarVisible = false;
 
@@ -39,8 +39,7 @@ class _HomePageState extends State<HomePage> {
       activeMenu = menuKey;
       isSidebarVisible = false;
     });
-    // debug print boleh dihapus nanti
-    // print("Navigasi ke: $menuKey");
+    print("Navigasi ke: $menuKey");
   }
 
   void toggleSidebar() {
@@ -391,7 +390,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Trash icon with background color #FFEAEB
                 Container(
                   width: 40,
                   height: 40,
