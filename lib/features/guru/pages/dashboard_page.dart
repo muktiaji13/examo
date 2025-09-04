@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../widgets/dashboard_widget.dart';
 import '../../../shared/widgets/app_header.dart';
-import 'detail_ujian_page.dart'; 
+import '../pages/exam_detail_page.dart'; 
 
 class GuruDashboardPage extends StatefulWidget {
-  const GuruDashboardPage({Key? key}) : super(key: key);
+  const GuruDashboardPage({super.key});
 
   @override
   State<GuruDashboardPage> createState() => _GuruDashboardPageState();
@@ -92,95 +93,12 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                   onMenuTap: toggleSidebar,
                                 ),
                                 const SizedBox(height: 20),
-
                                 // Search bar
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      TextField(
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: AppColors.white,
-                                          hintText: 'Telusuri',
-                                          hintStyle: AppTextStyle.inputText,
-                                          prefixIcon: Padding(
-                                            padding: const EdgeInsets.all(2),
-                                            child: SizedBox(
-                                              width: 36,
-                                              height: 36,
-                                              child: Image.asset(
-                                                'assets/images/search_icon.png',
-                                                fit: BoxFit.scaleDown,
-                                              ),
-                                            ),
-                                          ),
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                    ],
-                                  ),
-                                ),
+                                const DashboardSearchBar(),
                                 const SizedBox(height: 24),
-
                                 // Halo Card
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      gradient: const LinearGradient(
-                                        colors: [
-                                          Color(0xFFFFFFFF),
-                                          Color(0xFFD8EFFF),
-                                        ],
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.all(20),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Halo, Sobat Examo!',
-                                                style:
-                                                    AppTextStyle.title.copyWith(
-                                                  fontSize: 20,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                'Nikmati berbagai fitur menarik dan hebat dari examo. Buat ujianmu jadi gampang!',
-                                                style: AppTextStyle.subtitle
-                                                    .copyWith(fontSize: 14),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Image.asset(
-                                          'assets/images/banner_image.png',
-                                          height: 72,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                const DashboardHaloCard(),
                                 const SizedBox(height: 24),
-
                                 // Stat Cards
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -188,7 +106,7 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      _statCard(
+                                      DashboardStatCard(
                                         title: 'Total Ujian',
                                         subtitle: 'Dibuat Admin',
                                         count: '19',
@@ -197,7 +115,7 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                         iconPath: 'assets/images/ujian_icon.png',
                                       ),
                                       const SizedBox(width: 12),
-                                      _statCard(
+                                      DashboardStatCard(
                                         title: 'Total Siswa',
                                         subtitle: 'Mengikuti Ujian',
                                         count: '109',
@@ -209,47 +127,40 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 24),
-
                                 // Ujian Aktif Section
-                                _sectionHeader('Ujian Aktif'),
+                                const DashboardSectionHeader('Ujian Aktif', title: '',),
                                 const SizedBox(height: 12),
                                 if (ujianAktifList.isEmpty)
-                                  _emptyCard(
+                                  const DashboardEmptyCard(
                                     message: 'Oops! Daftar Ujian Belum Tersedia',
-                                    desc:
-                                        'Klik "Tambah Ujian" untuk mulai membuat ujian baru.',
+                                    desc: 'Klik "Tambah Ujian" untuk mulai membuat ujian baru.',
                                     image: 'assets/images/empty_exam.png',
                                   )
                                 else
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Column(
                                       children: ujianAktifList
-                                          .map((item) => _buildUjianAktifCard(item))
+                                          .map((item) => DashboardUjianAktifCard(item: item))
                                           .toList(),
                                     ),
                                   ),
-
                                 const SizedBox(height: 24),
-
                                 // Bank Soal Section
-                                _sectionHeader('Bank Soal'),
+                                const DashboardSectionHeader('Bank Soal', title: '',),
                                 const SizedBox(height: 12),
                                 if (bankSoalList.isEmpty)
-                                  _emptyCard(
+                                  const DashboardEmptyCard(
                                     message: 'Oops! Bank Soal Belum Tersedia',
-                                    desc:
-                                        'Klik "Tambah Bank Soal" untuk mulai membuat bank soal.',
+                                    desc: 'Klik "Tambah Bank Soal" untuk mulai membuat bank soal.',
                                     image: 'assets/images/empty_bank.png',
                                   )
                                 else
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
                                     child: Column(
                                       children: bankSoalList
-                                          .map((item) => _buildBankSoalCard(item))
+                                          .map((item) => DashboardBankSoalCard(item: item))
                                           .toList(),
                                     ),
                                   ),
@@ -265,7 +176,6 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
               ),
             ],
           ),
-
           // Overlay untuk mobile saat sidebar terbuka
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
@@ -280,7 +190,6 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                 ),
               ),
             ),
-
           // Sidebar
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
@@ -295,292 +204,11 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                 activeMenu: activeMenu,
                 onMenuTap: onMenuTap,
                 onClose: closeSidebar,
+                isVisible: isSidebarVisible, 
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildUjianAktifCard(Map<String, String> item) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: Border.all(color: const Color(0xFFEBEBEB)),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          children: [
-            Container(
-              height: 130,
-              decoration: BoxDecoration(
-                color: const Color(0xFFD5EDFF),
-                borderRadius: BorderRadius.circular(7),
-              ),
-              child: Center(
-                child: Image.asset(item['image'] ?? 'assets/images/ujian_aktif.png', height: 80),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    item['title'] ?? '',
-                    style: AppTextStyle.blackSubtitle.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE9FFF2),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    item['status'] ?? 'Aktif',
-                    style: AppTextStyle.menuItem.copyWith(
-                      color: const Color(0xFF2ECC71),
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(item['questions'] ?? '', style: AppTextStyle.cardSubtitle),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ExamDetailPage(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primaryBlue, Color(0xFF025BB1)],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                      child: Center(
-                        child: Text('Selengkapnya', style: AppTextStyle.button),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEAEB),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Image.asset('assets/images/trash.png', height: 18),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBankSoalCard(Map<String, String> item) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        child: Column(
-          children: [
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F8FF),
-                borderRadius: BorderRadius.circular(7),
-              ),
-              child: Center(
-                child: Image.asset(item['image'] ?? 'assets/images/bank_soal.png', height: 72),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item['title'] ?? '',
-                        style: AppTextStyle.blackSubtitle.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        item['desc'] ?? '',
-                        style: AppTextStyle.cardSubtitle,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Text(item['time'] ?? '', style: AppTextStyle.cardSubtitle),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primaryBlue, Color(0xFF025BB1)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text('Detail', style: AppTextStyle.button),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFEAEB),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Image.asset('assets/images/trash.png', height: 18),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _statCard({
-    required String title,
-    required String subtitle,
-    required String count,
-    required Color color,
-    required Color iconBg,
-    required String iconPath,
-  }) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: iconBg,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Image.asset(iconPath, height: 20),
-            ),
-            const SizedBox(height: 10),
-            Text(count, style: AppTextStyle.title.copyWith(fontSize: 20)),
-            Text(
-              title,
-              style: AppTextStyle.subtitle.copyWith(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Text(subtitle, style: AppTextStyle.subtitle.copyWith(fontSize: 12)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: AppTextStyle.title.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text('Selengkapnya', style: AppTextStyle.link.copyWith(fontSize: 13)),
-        ],
-      ),
-    );
-  }
-
-  Widget _emptyCard({
-    required String message,
-    required String desc,
-    required String image,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        padding: const EdgeInsets.symmetric(vertical: 28),
-        child: Column(
-          children: [
-            Image.asset(image, height: 64),
-            const SizedBox(height: 12),
-            Text(message, style: AppTextStyle.title.copyWith(fontSize: 14)),
-            Text(desc, style: AppTextStyle.subtitle.copyWith(fontSize: 12)),
-          ],
-        ),
       ),
     );
   }

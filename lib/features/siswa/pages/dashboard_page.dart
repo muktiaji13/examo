@@ -15,7 +15,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
     with SingleTickerProviderStateMixin {
   bool isSidebarOpen = false;
   late AnimationController _animationController;
-  late Animation<Offset> _sidebarAnimation;
 
   @override
   void initState() {
@@ -24,14 +23,6 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
-
-    _sidebarAnimation = Tween<Offset>(
-      begin: const Offset(-1, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
   }
 
   void toggleSidebar() {
@@ -60,65 +51,90 @@ class _DashboardPageState extends ConsumerState<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isWideScreen = screenWidth > 1000;
+    final double sidebarWidth = isWideScreen ? 300 : 240;
+    final double sidebarLeftPosition = isSidebarOpen ? 0 : -sidebarWidth;
+    final double mainContentLeftPadding = isSidebarOpen && isWideScreen
+        ? sidebarWidth
+        : 0;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          SafeArea(
-            child: Column(
-              children: [
-                AppHeader(onMenuTap: toggleSidebar),
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: AppLayout.maxWidth),
-                      child: ListView(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        children: [
-                          const SizedBox(height: 16),
-                          _buildSearchField(),
-                          const SizedBox(height: 16),
-                          _buildBannerCard(),
-                          const SizedBox(height: 16),
-                          _buildTotalUjianCard(),
-                          const SizedBox(height: 24),
-                          _buildSectionHeader(),
-                          const SizedBox(height: 12),
-                          _buildUjianAktifCard(),
-                          const SizedBox(height: 32),
-                        ],
-                      ),
+          Row(
+            children: [
+              Expanded(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  padding: EdgeInsets.only(left: mainContentLeftPadding),
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        AppHeader(onMenuTap: toggleSidebar),
+                        Expanded(
+                          child: Center(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: AppLayout.maxWidth),
+                              child: ListView(
+                                padding: const EdgeInsets.symmetric(horizontal: 16),
+                                children: [
+                                  const SizedBox(height: 16),
+                                  _buildSearchField(),
+                                  const SizedBox(height: 16),
+                                  _buildBannerCard(),
+                                  const SizedBox(height: 16),
+                                  _buildTotalUjianCard(),
+                                  const SizedBox(height: 24),
+                                  _buildSectionHeader(),
+                                  const SizedBox(height: 12),
+                                  _buildUjianAktifCard(),
+                                  const SizedBox(height: 32),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
           // BACKDROP GELAP
-          if (isSidebarOpen)
+          if (isSidebarOpen && !isWideScreen)
             GestureDetector(
               onTap: closeSidebar,
-              child: Container(
-                color: Colors.black.withOpacity(0.3),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: isSidebarOpen ? 1 : 0,
+                child: Container(
+                  color: Colors.black.withOpacity(0.4),
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
               ),
             ),
-
           // SIDEBAR ANIMASI
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (context, child) {
-              return SlideTransition(
-                position: _sidebarAnimation,
-                child: child,
-              );
-            },
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.6,
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            left: sidebarLeftPosition,
+            top: MediaQuery.of(context).padding.top,
+            bottom: 0,
+            child: Container(
+              width: sidebarWidth,
+              color: Colors.white,
               child: SidebarWidget(
                 activeMenu: 'dashboard',
-                onMenuTap: (menu) {},
+                onMenuTap: (menu) {
+                  // Logika navigasi Anda
+                },
                 onClose: closeSidebar,
+                isVisible: isSidebarOpen, 
               ),
             ),
           ),

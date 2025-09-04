@@ -1,7 +1,7 @@
-import 'package:examo/features/auth/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/auth/login_page.dart';
+import 'features/auth/pages/register_page.dart';
+import 'features/auth/pages/login_page.dart';
 import 'features/siswa/pages/dashboard_page.dart';
 import 'features/siswa/pages/pengaturan_page.dart';
 import 'features/guru/pages/dashboard_page.dart';

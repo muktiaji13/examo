@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../providers/syarat_ketentuan_provider.dart';
+import '../widgets/syarat_ketentuan_widget.dart';
 
 class SyaratKetentuanPage extends ConsumerWidget {
   const SyaratKetentuanPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sections = ref.watch(syaratKetentuanProvider);
+    
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F5),
         body: Column(
           children: [
             AppHeader(),
-
             // Main Content
             Expanded(
               child: SingleChildScrollView(
@@ -54,43 +57,9 @@ class SyaratKetentuanPage extends ConsumerWidget {
                                   letterSpacing: 0,
                                 ),
                               ),
-                              const SizedBox(height: 27), // dari 30 ke 87
+                              const SizedBox(height: 27),
                               // Sections
-                              _buildSection(
-                                number: '1.',
-                                title: 'Penerimaan Syarat',
-                                content:
-                                    'Dengan menggunakan Examo Anda dianggap menyetujui syarat dan ketentuan yang berlaku. Jika tidak setuju harap tidak menggunakan layanan ini.',
-                              ),
-                              _buildSection(
-                                number: '2.',
-                                title: 'Layanan',
-                                content:
-                                    'Examo. menyediakan layanan ujian online pembuatan ujian pembuatan bank soal dan program detail nilai melalui platfrom digital',
-                              ),
-                              _buildSection(
-                                number: '3.',
-                                title: 'Akun Pengguna',
-                                bullets: [
-                                  'Pengguna wajib mengisi data dengan benar dan lengkap.',
-                                  'Menjaga akun dan kata sandi adalah tanggung jawab pengguna.',
-                                  'Segala aktivitas dalam akun menjadi tanggung jawab pemiliknya.',
-                                ],
-                              ),
-                              _buildSection(
-                                number: '4.',
-                                title: 'Hak Cipta dan Konten',
-                                bullets: [
-                                  'Semua materi dan konten di platform ini dilindungi hak cipta dan tidak boleh disalin didistribusikan atau digunakan tanpa izin tertulis.',
-                                  'Pengguna tidak diperbolehkan mengunggah konten yang melanggar hukum atau mengandung SARA.',
-                                ],
-                              ),
-                              _buildSection(
-                                number: '5.',
-                                title: 'Perubahan Layanan',
-                                content:
-                                    'Kami berhak untuk mengubah menghentikan atau memperbarui fitur atau ketentuan kapan saja dengan atau tanpa pemberitahuan sebelumnya.',
-                              ),
+                              ...sections.map((section) => SyaratKetentuanSection(section: section)).toList(),
                             ],
                           ),
                         ),
@@ -104,107 +73,5 @@ class SyaratKetentuanPage extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildSection({
-    required String number,
-    required String title,
-    String? content,
-    List<String>? bullets,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '$number $title',
-            style: AppTextStyle.menuItem.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-              height: 1.0,
-              letterSpacing: 0,
-              color: AppColors.black,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Blue Line
-              Container(
-                width: 3,
-                margin: const EdgeInsets.only(top: 0, left: 26, right: 10),
-                color: AppColors.roleButtonSelected,
-                constraints: BoxConstraints(
-                  minHeight: _estimateLineHeight(content, bullets),
-                ),
-              ),
-              // Text Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: bullets != null
-                      ? bullets
-                            .map(
-                              (b) => Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      '• ',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        height: 1.0,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        b,
-                                        style: AppTextStyle.inputText.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                          fontSize: 14,
-                                          height: 1.0,
-                                          letterSpacing: 0,
-                                          color: AppColors.textGrey2,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            )
-                            .toList()
-                      : [
-                          Text(
-                            content ?? '',
-                            style: AppTextStyle.inputText.copyWith(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              height: 1.0,
-                              letterSpacing: 0,
-                              color: AppColors.textGrey2,
-                            ),
-                          ),
-                        ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  double _estimateLineHeight(String? content, List<String>? bullets) {
-    if (bullets != null) {
-      return bullets.length * 22;
-    }
-    if (content != null) {
-      final lines = (content.length / 50).ceil();
-      return lines * 22;
-    }
-    return 22;
   }
 }

@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../providers/edit_profile_provider.dart';
+import '../widgets/edit_profile_widget.dart';
 
-class EditProfilePage extends StatefulWidget {
+class EditProfilePage extends ConsumerStatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
 
   @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
+  ConsumerState<EditProfilePage> createState() => _EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage>
+class _EditProfilePageState extends ConsumerState<EditProfilePage>
     with TickerProviderStateMixin {
-  bool showNotif = false;
-  late AnimationController _notifController;
-  late Animation<Offset> _notifOffset;
   final ScrollController _scrollController = ScrollController();
-
-  // gender dropdown
   final List<String> genders = [
     'Laki Laki',
     'Perempuan',
     'Tidak ingin menyebutkan',
   ];
-  String? selectedGender = 'Perempuan';
-  bool isExpanded = false;
+  
+  late AnimationController _notifController;
+  late Animation<Offset> _notifOffset;
   late AnimationController arrowController;
   late Animation<double> arrowAnimation;
   late AnimationController dropdownController;
@@ -33,6 +32,7 @@ class _EditProfilePageState extends State<EditProfilePage>
   @override
   void initState() {
     super.initState();
+    
     _notifController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -41,7 +41,7 @@ class _EditProfilePageState extends State<EditProfilePage>
       begin: const Offset(0, -1),
       end: const Offset(0, 0.05),
     ).animate(CurvedAnimation(parent: _notifController, curve: Curves.easeOut));
-
+    
     arrowController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -49,7 +49,7 @@ class _EditProfilePageState extends State<EditProfilePage>
     arrowAnimation = Tween<double>(begin: 0, end: 0.5).animate(
       CurvedAnimation(parent: arrowController, curve: Curves.easeInOut),
     );
-
+    
     dropdownController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
@@ -58,11 +58,19 @@ class _EditProfilePageState extends State<EditProfilePage>
       parent: dropdownController,
       curve: Curves.easeInOut,
     );
+    
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(editProfileProvider.notifier).setSelectedGender('Perempuan');
+    });
   }
 
   void toggleDropdown() {
-    setState(() => isExpanded = !isExpanded);
-    if (isExpanded) {
+    final notifier = ref.read(editProfileProvider.notifier);
+    final currentState = ref.read(editProfileProvider); 
+    
+    notifier.toggleDropdown();
+    
+    if (currentState.isExpanded) { 
       arrowController.forward();
       dropdownController.forward();
     } else {
@@ -73,12 +81,15 @@ class _EditProfilePageState extends State<EditProfilePage>
 
   void showNotification() {
     _scrollToTop();
-    setState(() => showNotif = true);
+    ref.read(editProfileProvider.notifier).showNotification();
     _notifController.forward();
+    
     Timer(const Duration(seconds: 5), () {
       if (mounted) {
         _notifController.reverse().then((_) {
-          if (mounted) setState(() => showNotif = false);
+          if (mounted) {
+            ref.read(editProfileProvider.notifier).hideNotification();
+          }
         });
       }
     });
@@ -87,7 +98,9 @@ class _EditProfilePageState extends State<EditProfilePage>
   void hideNotification() {
     _scrollToTop();
     _notifController.reverse().then((_) {
-      if (mounted) setState(() => showNotif = false);
+      if (mounted) {
+        ref.read(editProfileProvider.notifier).hideNotification();
+      }
     });
   }
 
@@ -110,6 +123,8 @@ class _EditProfilePageState extends State<EditProfilePage>
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(editProfileProvider);
+    
     return Stack(
       children: [
         Scaffold(
@@ -166,77 +181,24 @@ class _EditProfilePageState extends State<EditProfilePage>
                               style: AppTextStyle.cardSubtitle,
                             ),
                             const SizedBox(height: 20),
-                            buildTextField('Username', 'Heesoo Atmaja'),
-                            buildTextField('Email', 'heesoo@gmail.com'),
-                            buildTextField('No. Telepon', '09876543458'),
-                            buildGenderField(),
+                            ProfileTextField(label: 'Username', value: 'Heesoo Atmaja'),
+                            ProfileTextField(label: 'Email', value: 'heesoo@gmail.com'),
+                            ProfileTextField(label: 'No. Telepon', value: '09876543458'),
+                            GenderDropdown(
+                              genders: genders,
+                              selectedGender: state.selectedGender,
+                              isExpanded: state.isExpanded,
+                              arrowAnimation: arrowAnimation,
+                              dropdownAnimation: dropdownAnimation,
+                              onToggle: toggleDropdown,
+                              onGenderSelected: (gender) {
+                                ref.read(editProfileProvider.notifier).setSelectedGender(gender);
+                              },
+                            ),
                             const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                SizedBox(
-                                  width: 108,
-                                  height: 37,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: const Color(0xFFFFEAEB),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Batal',
-                                        style: AppTextStyle.cardTitleDanger
-                                            .copyWith(fontSize: 14),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                SizedBox(
-                                  width: 108,
-                                  height: 37,
-                                  child: ElevatedButton(
-                                    onPressed: showNotification,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    child: Ink(
-                                      decoration: BoxDecoration(
-                                        gradient: const LinearGradient(
-                                          colors: [
-                                            Color(0xFF0081FF),
-                                            Color(0xFF025BB1),
-                                          ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Simpan',
-                                          style: AppTextStyle.button.copyWith(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            ProfileActionButtons(
+                              onCancel: () => Navigator.pop(context),
+                              onSave: showNotification,
                             ),
                           ],
                         ),
@@ -248,274 +210,11 @@ class _EditProfilePageState extends State<EditProfilePage>
             ),
           ),
         ),
-        if (showNotif)
-          SlideTransition(
-            position: _notifOffset,
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Container(
-                width: 320,
-                height: 70,
-                margin: const EdgeInsets.only(top: 40),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF3ED4AF)),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x26000000),
-                      blurRadius: 5,
-                      spreadRadius: 0,
-                      offset: Offset(0, 0),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF3ED4AF),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Image.asset(
-                        'assets/images/done.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Edit Profil',
-                            style: AppTextStyle.cardTitle.copyWith(
-                              fontSize: 14,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Pembaruan profil anda berhasil!',
-                            style: AppTextStyle.cardSubtitle.copyWith(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: hideNotification,
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.black45,
-                        size: 18,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+        if (state.showNotif)
+          ProfileNotification(
+            slideAnimation: _notifOffset,
+            onClose: hideNotification,
           ),
-      ],
-    );
-  }
-
-  Widget buildTextField(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            fontSize: 16,
-            height: 1.0,
-            letterSpacing: 0,
-            color: Color(0xFF000000), // label color hitam
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextField(
-          controller: TextEditingController(text: value),
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            fontSize: 16,
-            height: 1.0,
-            letterSpacing: 0,
-            color: Color(0xFF777777), // teks input warna #777777
-          ),
-          cursorColor: Colors.black,
-          decoration: const InputDecoration(
-            hintText: '',
-            hintStyle: TextStyle(
-              color: Color(0xFF777777), // hint warna #777777
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0xFFD9D9D9),
-              ), // border #D9D9D9
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Color(0xFFD9D9D9),
-              ), // border #D9D9D9
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            isDense: true,
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          ),
-        ),
-        const SizedBox(height: 16),
-      ],
-    );
-  }
-
-  Widget buildGenderField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Jenis Kelamin',
-          style: TextStyle(
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            fontSize: 16,
-            height: 1.0,
-            letterSpacing: 0,
-            color: Color(0xFF000000),
-          ),
-        ),
-        const SizedBox(height: 6),
-
-        // Tombol utama buat buka/tutup dropdown
-        GestureDetector(
-          onTap: toggleDropdown,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFD9D9D9)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  selectedGender ?? 'Pilih Jenis Kelamin',
-                  style: const TextStyle(
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    fontSize: 16,
-                    height: 1.0,
-                    letterSpacing: 0,
-                    color: Color(0xFF777777),
-                  ),
-                ),
-                RotationTransition(
-                  turns: arrowAnimation,
-                  child: const Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Color(0xFF555555),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-
-        // Dropdown list
-        SizeTransition(
-          sizeFactor: dropdownAnimation,
-          axisAlignment: -1,
-          child: Container(
-            margin: const EdgeInsets.only(
-              top: 8,
-              left: 8,
-              right: 8,
-              bottom: 8,
-            ), // kasih space bawah juga
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x26000000), // #00000026
-                  blurRadius: 5, // kecilin shadow
-                  spreadRadius: 0, // jangan nyebar kemana2
-                  offset: Offset(0, 0), // biar rata semua sisi
-                ),
-              ],
-            ),
-            child: Column(
-              children: genders.asMap().entries.map((entry) {
-                final index = entry.key;
-                final g = entry.value;
-                final isSelected = g == selectedGender;
-
-                // atur radius khusus untuk item pertama & terakhir
-                BorderRadius radius = BorderRadius.zero;
-                if (index == 0) {
-                  radius = const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  );
-                } else if (index == genders.length - 1) {
-                  radius = const BorderRadius.only(
-                    bottomLeft: Radius.circular(8),
-                    bottomRight: Radius.circular(8),
-                  );
-                }
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedGender = g;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 14,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFFE2F1FF)
-                          : Colors.transparent,
-                      borderRadius: radius,
-                    ),
-                    child: Text(
-                      g,
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Color(0xFF777777),
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
       ],
     );
   }

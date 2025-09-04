@@ -18,11 +18,10 @@ class PengaturanPage extends ConsumerStatefulWidget {
 
 class _PengaturanPageState extends ConsumerState<PengaturanPage>
     with SingleTickerProviderStateMixin {
-  String activeMenu = 'profil';
+  String activeMenu = 'pengaturan';
   bool isSidebarVisible = false;
   bool showLogoutConfirm = false;
   bool isLoggingOut = false;
-
   late final AnimationController _animationController;
   late final Animation<Offset> _slideAnimation;
 
@@ -33,13 +32,12 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _slideAnimation =
-        Tween<Offset>(
-          begin: const Offset(0, 1),
-          end: const Offset(0, 0),
-        ).animate(
-          CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
-        );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: const Offset(0, 0),
+    ).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeOut),
+    );
   }
 
   void toggleSidebar() => setState(() => isSidebarVisible = !isSidebarVisible);
@@ -64,12 +62,13 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
   @override
   Widget build(BuildContext context) {
     final authNotifier = ref.read(authProvider.notifier);
-
-    final w = MediaQuery.of(context).size.width;
-    final isWide = w > 1000;
-    final sidebarW = isWide ? 300.0 : 240.0;
-    final sidebarX = isSidebarVisible ? 0.0 : -sidebarW;
-    final leftPad = isSidebarVisible && isWide ? sidebarW : 0.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final bool isWideScreen = screenWidth > 1000;
+    final double sidebarWidth = isWideScreen ? 300 : 240;
+    final double sidebarLeftPosition = isSidebarVisible ? 0 : -sidebarWidth;
+    final double mainContentLeftPadding = isSidebarVisible && isWideScreen
+        ? sidebarWidth
+        : 0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
@@ -81,7 +80,7 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
-                  padding: EdgeInsets.only(left: leftPad),
+                  padding: EdgeInsets.only(left: mainContentLeftPadding),
                   child: SafeArea(
                     child: SingleChildScrollView(
                       child: Column(
@@ -98,9 +97,8 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
               ),
             ],
           ),
-
           // Overlay
-          if (isSidebarVisible && !isWide)
+          if (isSidebarVisible && !isWideScreen)
             GestureDetector(
               onTap: closeSidebar,
               child: AnimatedOpacity(
@@ -113,16 +111,15 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
                 ),
               ),
             ),
-
           // Sidebar
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            left: sidebarX,
+            left: sidebarLeftPosition,
             top: MediaQuery.of(context).padding.top,
             bottom: 0,
             child: Container(
-              width: sidebarW,
+              width: sidebarWidth,
               color: Colors.white,
               child: SidebarWidget(
                 activeMenu: activeMenu,
@@ -134,10 +131,10 @@ class _PengaturanPageState extends ConsumerState<PengaturanPage>
                   Navigator.pushNamed(context, '/$menuKey');
                 },
                 onClose: closeSidebar,
+                isVisible: isSidebarVisible, 
               ),
             ),
           ),
-
           // Logout dialog
           if (showLogoutConfirm) ...[
             GestureDetector(

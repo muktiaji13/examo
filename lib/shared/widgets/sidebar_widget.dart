@@ -7,12 +7,14 @@ class SidebarWidget extends ConsumerStatefulWidget {
   final String activeMenu;
   final Function(String) onMenuTap;
   final VoidCallback onClose;
+  final bool isVisible; 
 
   const SidebarWidget({
     super.key,
     required this.activeMenu,
     required this.onMenuTap,
     required this.onClose,
+    required this.isVisible, 
   });
 
   @override
@@ -22,14 +24,12 @@ class SidebarWidget extends ConsumerStatefulWidget {
 class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
   bool isLanggananExpanded = true;
   bool isPengaturanExpanded = true;
-
+  
   Future<void> _navigateTo(String menuKey) async {
     widget.onMenuTap(menuKey);
     widget.onClose();
-
     final auth = ref.read(authProvider);
     final role = auth.role ?? 'user';
-
     switch (menuKey) {
       case 'dashboard':
         Navigator.of(context).pushReplacementNamed(
@@ -63,12 +63,12 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
         );
     }
   }
-
+  
   static const double _subItemHeight = 32;
   static const double _subItemSpacing = 8;
   static const double _leftColumnWidth = 45;
   static const double _subItemButtonWidth = 140;
-
+  
   Widget buildMenuItem({
     required String label,
     required String menuKey,
@@ -80,7 +80,6 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
     bool showDot = false,
   }) {
     final isActive = widget.activeMenu == menuKey;
-
     if (showDot) {
       return InkWell(
         onTap: () => _navigateTo(menuKey),
@@ -89,14 +88,12 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // left column: dashed line + dot ditumpuk biar nempel
               SizedBox(
                 width: _leftColumnWidth,
                 height: _subItemHeight,
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    // garis putus-putus (vertikal)
                     Positioned.fill(
                       child: CustomPaint(
                         painter: DashedLinePainter(
@@ -108,7 +105,6 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                         ),
                       ),
                     ),
-                    // dot tepat di tengah garis
                     Container(
                       width: 10,
                       height: 10,
@@ -120,8 +116,6 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                   ],
                 ),
               ),
-
-              // konten (teks + background aktif) sesuai dimensi tombol
               GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () => _navigateTo(menuKey),
@@ -129,7 +123,7 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
                   width: _subItemButtonWidth,
                   height: _subItemHeight,
                   alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(left: 10), // teks left:10
+                  padding: const EdgeInsets.only(left: 10),
                   decoration: BoxDecoration(
                     color: isActive
                         ? AppColors.primaryBlue
@@ -149,8 +143,6 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
         ),
       );
     }
-
-    // default regular menu item (icon + label)
     return InkWell(
       onTap: () => _navigateTo(menuKey),
       child: Container(
@@ -196,7 +188,7 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
       ),
     );
   }
-
+  
   Widget buildExpandableSection({
     required String label,
     required String iconPath,
@@ -206,7 +198,6 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
   }) {
     final isActive = widget.activeMenu == label.toLowerCase();
     final color = isActive ? AppColors.white : AppColors.black;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -282,7 +273,7 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
       ],
     );
   }
-
+  
   Widget buildDashedDividerHorizontal() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
@@ -298,12 +289,12 @@ class _SidebarWidgetState extends ConsumerState<SidebarWidget> {
       ),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
     final role = auth.role ?? 'user';
-
+    
     return SafeArea(
       child: Container(
         width: role == 'guru' ? 220 : 190,
@@ -415,7 +406,7 @@ class DashedLinePainter extends CustomPainter {
   final double dashWidth;
   final double dashSpace;
   final bool vertical;
-
+  
   DashedLinePainter({
     required this.color,
     required this.strokeWidth,
@@ -423,7 +414,7 @@ class DashedLinePainter extends CustomPainter {
     required this.dashSpace,
     this.vertical = true,
   });
-
+  
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -431,10 +422,8 @@ class DashedLinePainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.square;
-
     double start = 0;
     final length = vertical ? size.height : size.width;
-
     if (vertical) {
       final x = size.width / 2;
       while (start < length) {
@@ -451,7 +440,7 @@ class DashedLinePainter extends CustomPainter {
       }
     }
   }
-
+  
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

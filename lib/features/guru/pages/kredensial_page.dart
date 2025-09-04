@@ -1,40 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../providers/kredensial_provider.dart';
+import '../widgets/kredensial_widget.dart';
 
-class KredensialPage extends StatefulWidget {
+class KredensialPage extends ConsumerStatefulWidget {
   const KredensialPage({super.key});
 
   @override
-  State<KredensialPage> createState() => _KredensialPageState();
+  ConsumerState<KredensialPage> createState() => _KredensialPageState();
 }
 
-class _KredensialPageState extends State<KredensialPage> {
-  String activeMenu = 'kredensial';
-  bool isSidebarVisible = false;
-
+class _KredensialPageState extends ConsumerState<KredensialPage> {
   void onMenuTap(String menuKey) {
-    setState(() {
-      activeMenu = menuKey;
-      isSidebarVisible = false;
-    });
+    ref.read(activeMenuProvider.notifier).state = menuKey;
+    ref.read(sidebarVisibleProvider.notifier).state = false;
   }
 
   void toggleSidebar() {
-    setState(() {
-      isSidebarVisible = !isSidebarVisible;
-    });
+    ref.read(sidebarVisibleProvider.notifier).state = 
+        !ref.read(sidebarVisibleProvider);
   }
 
   void closeSidebar() {
-    setState(() {
-      isSidebarVisible = false;
-    });
+    ref.read(sidebarVisibleProvider.notifier).state = false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final isSidebarVisible = ref.watch(sidebarVisibleProvider);
     final screenWidth = MediaQuery.of(context).size.width;
     final bool isWideScreen = screenWidth > 1000;
     final double sidebarWidth = isWideScreen ? 300 : 240;
@@ -67,174 +63,9 @@ class _KredensialPageState extends State<KredensialPage> {
                             children: [
                               AppHeader(onMenuTap: toggleSidebar),
                               const SizedBox(height: 20),
-
-                              // Title
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Text(
-                                  'Kredensial',
-                                  style: AppTextStyle.title.copyWith(
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
+                              const KredensialHeader(),
                               const SizedBox(height: 16),
-
-                              // Card Konten
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Examo',
-                                        style: AppTextStyle.title.copyWith(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        'Examo menyediakan kunci API untuk integrasi pembayaran online dan menawarkan template yang mudah digunakan dan antarmuka yang dapat disesuaikan sehingga mudah diimplementasikan.',
-                                        style: AppTextStyle.subtitle,
-                                      ),
-                                      const SizedBox(height: 20),
-
-                                      Divider(
-                                        height: 1,
-                                        color: Colors.grey.shade300,
-                                      ),
-                                      const SizedBox(height: 16),
-
-                                      Text(
-                                        'API Keys',
-                                        style: AppTextStyle.cardTitle,
-                                      ),
-                                      const SizedBox(height: 12),
-
-                                      // Teacher ID
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(12),
-                                        margin: const EdgeInsets.only(
-                                          bottom: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFECF7FF),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Teacher ID  :  ',
-                                              style: AppTextStyle.cardTitle,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                'Exam60',
-                                                style:
-                                                    AppTextStyle.cardSubtitle,
-                                              ),
-                                            ),
-                                            Image.asset(
-                                              'assets/images/copy_icon.png',
-                                              height: 20,
-                                              width: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // Teacher Key
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFECF7FF),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              'Teacher Key :  ',
-                                              style: AppTextStyle.cardTitle,
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                'bulVfe8wyf0qZI',
-                                                style:
-                                                    AppTextStyle.cardSubtitle,
-                                              ),
-                                            ),
-                                            Image.asset(
-                                              'assets/images/copy_icon.png',
-                                              height: 20,
-                                              width: 20,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 20),
-
-                                      // Warning Box
-                                      Container(
-                                        width: double.infinity,
-                                        padding: const EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFFFFE6E6),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Image.asset(
-                                              'assets/images/danger.png',
-                                              height: 24,
-                                              width: 24,
-                                            ),
-                                            const SizedBox(width: 12),
-                                            Expanded(
-                                              child: Text.rich(
-                                                TextSpan(
-                                                  text:
-                                                      'Kunci ini dibuat secara otomatis oleh sistem dan tidak boleh diubah. Jika Anda benar-benar perlu mengubah kunci karena suatu alasan, silakan ',
-                                                  style: AppTextStyle
-                                                      .blackSubtitle,
-                                                  children: [
-                                                    TextSpan(
-                                                      text: 'Hubungi Kami.',
-                                                      style: AppTextStyle.link,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              const KredensialCard(),
                               const SizedBox(height: 40),
                             ],
                           ),
@@ -246,7 +77,6 @@ class _KredensialPageState extends State<KredensialPage> {
               ),
             ],
           ),
-
           // Overlay
           if (isSidebarVisible && !isWideScreen)
             GestureDetector(
@@ -261,7 +91,6 @@ class _KredensialPageState extends State<KredensialPage> {
                 ),
               ),
             ),
-
           // Sidebar
           AnimatedPositioned(
             duration: const Duration(milliseconds: 300),
@@ -273,9 +102,10 @@ class _KredensialPageState extends State<KredensialPage> {
               width: sidebarWidth,
               color: Colors.white,
               child: SidebarWidget(
-                activeMenu: activeMenu,
+                activeMenu: ref.watch(activeMenuProvider),
                 onMenuTap: onMenuTap,
                 onClose: closeSidebar,
+                isVisible: isSidebarVisible, 
               ),
             ),
           ),

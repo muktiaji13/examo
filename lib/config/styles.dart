@@ -102,6 +102,41 @@ class AppTextStyle {
     fontSize: 16,
     color: AppColors.dangerRed,
   );
+
+  static const TextStyle sectionTitle = TextStyle(
+    fontWeight: FontWeight.w600,
+    fontSize: 20,
+  );
+
+  static const TextStyle label = TextStyle(
+    fontWeight: FontWeight.w500,
+    fontSize: 18,
+  );
+
+  static const TextStyle value = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 14,
+    color: Color(0xFF4E4E4E),
+  );
+
+  static const TextStyle featureText = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+    height: 18 / 16,
+    letterSpacing: -0.17,
+    color: Color(0xFF4E4E4E),
+  );
+
+  static const TextStyle priceLabel = TextStyle(
+    fontWeight: FontWeight.w400,
+    fontSize: 16,
+    color: Color(0xFF4E4E4E),
+  );
+
+  static const TextStyle price = TextStyle(
+    fontWeight: FontWeight.w600,
+    fontSize: 24,
+  );
 }
 
 class AppLayout {

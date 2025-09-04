@@ -3,26 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
-import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
-import 'detail_paket_page.dart';
-
-// Provider state Riverpod
-final activeMenuProvider = StateProvider<String>((ref) => 'riwayat');
-final sidebarVisibleProvider = StateProvider<bool>((ref) => false);
-
-// Dummy data pembelian
-final pembelianProvider = Provider<List<Map<String, dynamic>>>((ref) {
-  return List.generate(10, (index) {
-    return {
-      "no": index + 1,
-      "namaPaket": ["Paket Pro", "Paket Premium", "Paket Basic"][index % 3],
-      "durasi": "1 Bulan",
-      "tglMulai": index % 2 == 0 ? "01 Mei 2025" : "01 April 2025",
-      "tglAkhir": index % 2 == 0 ? "1 Juni 2025" : "1 Mei 2025",
-      "status": ["Tuntas", "Pending", "Kadaluarsa"][index % 3],
-    };
-  });
-});
+import '../providers/riwayat_pembelian_provider.dart';
+import '../widgets/riwayat_pembelian_widget.dart';
 
 class RiwayatPembelianPage extends ConsumerWidget {
   const RiwayatPembelianPage({super.key});
@@ -69,13 +51,13 @@ class RiwayatPembelianPage extends ConsumerWidget {
                                     ),
                               ),
                               const SizedBox(height: 20),
-                              _buildTitle(),
+                              const RiwayatPembelianTitle(),
                               const SizedBox(height: 12),
-                              _buildFilter(),
+                              const RiwayatPembelianFilter(),
                               const SizedBox(height: 20),
-                              _buildTable(context, ref),
+                              const RiwayatPembelianTable(),
                               const SizedBox(height: 20),
-                              _buildPagination(),
+                              const RiwayatPembelianPagination(),
                             ],
                           ),
                         ),
@@ -117,6 +99,7 @@ class RiwayatPembelianPage extends ConsumerWidget {
                 },
                 onClose: () =>
                     ref.read(sidebarVisibleProvider.notifier).state = false,
+                isVisible: isSidebarVisible,
               ),
             ),
           ),
@@ -192,11 +175,14 @@ class RiwayatPembelianPage extends ConsumerWidget {
               headingRowColor: MaterialStateProperty.all(
                 const Color(0xFF0081FF),
               ),
-              headingTextStyle: AppTextStyle.cardTitleWhite.copyWith(
+              headingTextStyle: const TextStyle(
+                fontFamily: 'Poppins',
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
+                color: Colors.white,
               ),
-              dataTextStyle: AppTextStyle.blackSubtitle.copyWith(
+              dataTextStyle: const TextStyle(
+                fontFamily: 'Poppins',
                 fontSize: 14,
               ),
               columns: const [
@@ -311,7 +297,8 @@ class RiwayatPembelianPage extends ConsumerWidget {
       child: Center(
         child: Text(
           text,
-          style: AppTextStyle.blackSubtitle.copyWith(
+          style: TextStyle(
+            fontFamily: 'Poppins',
             fontWeight: FontWeight.w500,
             fontSize: 16,
             color: active ? Colors.white : const Color(0xFFD1D1D1),
