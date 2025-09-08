@@ -1,6 +1,9 @@
+// lib/features/guru/widgets/detail_ujian_widget.dart
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
-import '../models/detail_ujian_model.dart';
+import '../providers/detail_ujian_provider.dart';
 
 class DetailUjianHeader extends StatelessWidget {
   final VoidCallback onBack;
@@ -9,7 +12,7 @@ class DetailUjianHeader extends StatelessWidget {
     super.key,
     required this.onBack,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -31,16 +34,15 @@ class DetailUjianHeader extends StatelessWidget {
   }
 }
 
-class DetailUjianCard extends StatelessWidget {
-  final DetailUjian exam;
-  
+class DetailUjianCard extends ConsumerWidget {
   const DetailUjianCard({
     super.key,
-    required this.exam,
   });
-
+  
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exam = ref.watch(detailUjianProvider);
+    
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -107,25 +109,25 @@ class DetailUjianCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             // Info Rows
-            ExamInfoRow(
+            UjianInfoRow(
               label: 'Tanggal :',
               value: exam.date,
               icon: 'assets/images/yellow-date.png',
               bgColor: const Color(0xFFFFF9E5),
             ),
-            ExamInfoRow(
+            UjianInfoRow(
               label: 'Waktu Ujian :',
               value: exam.duration,
               icon: 'assets/images/time.png',
               bgColor: const Color(0xFFE6F3FF),
             ),
-            ExamInfoRow(
+            UjianInfoRow(
               label: 'Jumlah Soal :',
               value: exam.questionCount,
               icon: 'assets/images/file.png',
               bgColor: const Color(0xFFFFEFE8),
             ),
-            ExamInfoRow(
+            UjianInfoRow(
               label: 'Nilai KKM :',
               value: exam.kkm,
               icon: 'assets/images/sort.png',
@@ -169,20 +171,20 @@ class DetailUjianCard extends StatelessWidget {
   }
 }
 
-class ExamInfoRow extends StatelessWidget {
+class UjianInfoRow extends StatelessWidget {
   final String label;
   final String value;
   final String icon;
   final Color bgColor;
-
-  const ExamInfoRow({
+  
+  const UjianInfoRow({
     super.key,
     required this.label,
     required this.value,
     required this.icon,
     required this.bgColor,
   });
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -207,16 +209,15 @@ class ExamInfoRow extends StatelessWidget {
   }
 }
 
-class ExamRulesCard extends StatelessWidget {
-  final DetailUjian exam;
-  
-  const ExamRulesCard({
+class UjianRuleCard extends ConsumerWidget {
+  const UjianRuleCard({
     super.key,
-    required this.exam,
   });
-
+  
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final exam = ref.watch(detailUjianProvider);
+    
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
