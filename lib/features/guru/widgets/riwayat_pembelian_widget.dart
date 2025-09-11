@@ -5,6 +5,7 @@ import '../../../config/styles.dart';
 import '../providers/riwayat_pembelian_provider.dart';
 import '../pages/detail_paket_page.dart';
 import '../models/detail_paket_model.dart';
+import 'riwayat_pembelian_filter_modal.dart';
 
 class RiwayatPembelianTitle extends StatelessWidget {
   const RiwayatPembelianTitle({super.key});
@@ -31,28 +32,63 @@ class RiwayatPembelianFilter extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          _filterButton('Filter'),
+          _filterButton(context, 'Filter'),
           const SizedBox(width: 8),
-          _filterButton('10'),
+          _filterButton(context, '10'),
         ],
       ),
     );
   }
 
-  Widget _filterButton(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        children: [
-          Text(text, style: AppTextStyle.subtitle),
-          const SizedBox(width: 8),
-          Image.asset('assets/images/arrow_down.png'),
-        ],
+  Widget _filterButton(BuildContext context, String text) {
+    return GestureDetector(
+      onTap: () {
+        if (text == 'Filter') {
+          showGeneralDialog(
+            context: context,
+            barrierLabel: "Filter",
+            barrierDismissible: true,
+            barrierColor: Colors.black54,
+            transitionDuration: const Duration(milliseconds: 300),
+            pageBuilder: (context, anim1, anim2) {
+              return const SizedBox.shrink();
+            },
+            transitionBuilder: (context, anim1, anim2, child) {
+              final offset = Tween(
+                begin: const Offset(0, 1),
+                end: const Offset(0, 0),
+              ).animate(CurvedAnimation(parent: anim1, curve: Curves.easeOut));
+
+              return SlideTransition(
+                position: offset,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: const FilterModal(),
+                ),
+              );
+            },
+          );
+        } else {
+          // contoh untuk tombol '10', bisa lu ganti nanti
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Dropdown jumlah data belum dibuat')),
+          );
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            Text(text, style: AppTextStyle.subtitle),
+            const SizedBox(width: 8),
+            const Icon(Icons.expand_more, size: 16, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }
@@ -64,7 +100,7 @@ class RiwayatPembelianTable extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = ref.watch(pembelianProvider);
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: ClipRRect(
@@ -84,16 +120,12 @@ class RiwayatPembelianTable extends ConsumerWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              headingRowColor: MaterialStateProperty.all(
-                const Color(0xFF0081FF),
-              ),
+              headingRowColor: WidgetStateProperty.all(const Color(0xFF0081FF)),
               headingTextStyle: AppTextStyle.cardTitleWhite.copyWith(
                 fontWeight: FontWeight.w600,
                 fontSize: 16,
               ),
-              dataTextStyle: AppTextStyle.blackSubtitle.copyWith(
-                fontSize: 14,
-              ),
+              dataTextStyle: AppTextStyle.blackSubtitle.copyWith(fontSize: 14),
               columns: const [
                 DataColumn(label: Text('No')),
                 DataColumn(label: Text('Nama Paket')),
@@ -154,14 +186,14 @@ class RiwayatPembelianTable extends ConsumerWidget {
 
 class StatusBadge extends StatelessWidget {
   final String status;
-  
+
   const StatusBadge({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
     Color bgColor;
     Color textColor;
-    
+
     if (status == 'Tuntas') {
       bgColor = const Color(0xFFE9FFF2);
       textColor = const Color(0xFF2ECC71);
@@ -172,7 +204,7 @@ class StatusBadge extends StatelessWidget {
       bgColor = const Color(0xFFE9E9E9);
       textColor = const Color(0xFF717171);
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
