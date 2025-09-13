@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../models/bank_soal_model.dart';
 import '../providers/bank_soal_provider.dart';
 import '../widgets/bank_soal_widget.dart';
@@ -142,7 +143,7 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProvider
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: BankSoalSearchBar(
+                                        child: SearchBarWidget(
                                           onChanged: notifier.setQuery,
                                         ),
                                       ),

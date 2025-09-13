@@ -10,7 +10,7 @@ class ExamDetailPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final exam = ref.watch(detailUjianProvider);
+    ref.watch(detailUjianProvider);
     
     return Scaffold(
       backgroundColor: AppColors.background2,
@@ -28,9 +28,9 @@ class ExamDetailPage extends ConsumerWidget {
                 },
               ),
               const SizedBox(height: 16),
-              DetailUjianCard(exam: exam),
+              DetailUjianCard(),
               const SizedBox(height: 16),
-              ExamRulesCard(exam: exam),
+              UjianRuleCard(),
             ],
           ),
         ),

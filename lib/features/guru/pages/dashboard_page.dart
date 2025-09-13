@@ -1,9 +1,9 @@
+import 'package:examo/shared/widgets/common_item.dart';
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../widgets/dashboard_widget.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../pages/exam_detail_page.dart'; 
 
 class GuruDashboardPage extends StatefulWidget {
   const GuruDashboardPage({super.key});
@@ -13,6 +13,7 @@ class GuruDashboardPage extends StatefulWidget {
 }
 
 class _GuruDashboardPageState extends State<GuruDashboardPage> {
+  String search = '';
   String activeMenu = 'dashboard';
   bool isSidebarVisible = false;
 
@@ -22,7 +23,7 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
       'title': 'Ujian Bab Komputer In..',
       'questions': '25 Pertanyaan',
       'image': 'assets/images/ujian_aktif.png',
-      'status': 'Aktif'
+      'status': 'Aktif',
     },
   ];
 
@@ -89,12 +90,17 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
-                                AppHeader(
-                                  onMenuTap: toggleSidebar,
-                                ),
+                                AppHeader(onMenuTap: toggleSidebar),
                                 const SizedBox(height: 20),
                                 // Search bar
-                                const DashboardSearchBar(),
+                                SearchBarWidget(
+                                  onChanged: (q) {
+                                    setState(() {
+                                      search = q;
+                                    });
+                                  },
+                                ),
+
                                 const SizedBox(height: 24),
                                 // Halo Card
                                 const DashboardHaloCard(),
@@ -112,7 +118,8 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                         count: '19',
                                         color: const Color(0xFFFBF2EF),
                                         iconBg: const Color(0xFFFE9479),
-                                        iconPath: 'assets/images/ujian_icon.png',
+                                        iconPath:
+                                            'assets/images/ujian_icon.png',
                                       ),
                                       const SizedBox(width: 12),
                                       DashboardStatCard(
@@ -121,46 +128,68 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                                         count: '109',
                                         color: const Color(0xFFFEF5E5),
                                         iconBg: const Color(0xFFFEC53D),
-                                        iconPath: 'assets/images/siswa_icon.png',
+                                        iconPath:
+                                            'assets/images/siswa_icon.png',
                                       ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(height: 24),
                                 // Ujian Aktif Section
-                                const DashboardSectionHeader('Ujian Aktif', title: '',),
+                                const DashboardSectionHeader(
+                                  'Ujian Aktif',
+                                  title: '',
+                                ),
                                 const SizedBox(height: 12),
                                 if (ujianAktifList.isEmpty)
                                   const DashboardEmptyCard(
-                                    message: 'Oops! Daftar Ujian Belum Tersedia',
-                                    desc: 'Klik "Tambah Ujian" untuk mulai membuat ujian baru.',
+                                    message:
+                                        'Oops! Daftar Ujian Belum Tersedia',
+                                    desc:
+                                        'Klik "Tambah Ujian" untuk mulai membuat ujian baru.',
                                     image: 'assets/images/empty_exam.png',
                                   )
                                 else
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
                                     child: Column(
                                       children: ujianAktifList
-                                          .map((item) => DashboardUjianAktifCard(item: item))
+                                          .map(
+                                            (item) => DashboardUjianAktifCard(
+                                              item: item,
+                                            ),
+                                          )
                                           .toList(),
                                     ),
                                   ),
                                 const SizedBox(height: 24),
                                 // Bank Soal Section
-                                const DashboardSectionHeader('Bank Soal', title: '',),
+                                const DashboardSectionHeader(
+                                  'Bank Soal',
+                                  title: '',
+                                ),
                                 const SizedBox(height: 12),
                                 if (bankSoalList.isEmpty)
                                   const DashboardEmptyCard(
                                     message: 'Oops! Bank Soal Belum Tersedia',
-                                    desc: 'Klik "Tambah Bank Soal" untuk mulai membuat bank soal.',
+                                    desc:
+                                        'Klik "Tambah Bank Soal" untuk mulai membuat bank soal.',
                                     image: 'assets/images/empty_bank.png',
                                   )
                                 else
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                    ),
                                     child: Column(
                                       children: bankSoalList
-                                          .map((item) => DashboardBankSoalCard(item: item))
+                                          .map(
+                                            (item) => DashboardBankSoalCard(
+                                              item: item,
+                                            ),
+                                          )
                                           .toList(),
                                     ),
                                   ),
@@ -204,7 +233,7 @@ class _GuruDashboardPageState extends State<GuruDashboardPage> {
                 activeMenu: activeMenu,
                 onMenuTap: onMenuTap,
                 onClose: closeSidebar,
-                isVisible: isSidebarVisible, 
+                isVisible: isSidebarVisible,
               ),
             ),
           ),

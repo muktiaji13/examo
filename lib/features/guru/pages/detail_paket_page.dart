@@ -1,3 +1,4 @@
+import 'package:examo/shared/widgets/common_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -49,7 +50,7 @@ class _DetailPaketPageState extends ConsumerState<DetailPaketPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Detail Paket', style: AppTextStyle.title),
-                  const KembaliButton(),
+                  const BackButtonWidget(),
                 ],
               ),
             ),
