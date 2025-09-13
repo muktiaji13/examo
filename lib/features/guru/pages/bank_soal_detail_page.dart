@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../providers/bank_soal_detail_provider.dart';
 import '../widgets/bank_soal_detail_widget.dart';
 
