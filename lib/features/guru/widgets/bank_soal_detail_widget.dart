@@ -4,38 +4,6 @@ import '../../../config/styles.dart';
 import '../models/bank_soal_detail_model.dart';
 import '../providers/bank_soal_detail_provider.dart';
 
-class BackButtonWidget extends StatelessWidget {
-  final TextStyle? style;
-  
-  const BackButtonWidget({super.key, this.style});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).maybePop(),
-      child: Container(
-        width: 101,
-        height: 31,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: Row(
-          children: [
-            Image.asset('assets/images/arrow-back.png', width: 16, height: 16),
-            const SizedBox(width: 6),
-            Text(
-              'Kembali',
-              style: style ?? AppTextStyle.blackSubtitle.copyWith(fontSize: 13),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class CourseCard extends StatelessWidget {
   const CourseCard({super.key});
 

@@ -1,37 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 
-class DaftarUjianSearchBar extends StatelessWidget {
-  const DaftarUjianSearchBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: TextField(
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: const Color(0xFFFFFFFF),
-          hintText: 'Telusuri',
-          hintStyle: AppTextStyle.inputText,
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Image.asset(
-              'assets/images/search_icon.png',
-              width: 20,
-              height: 20,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class DaftarUjianActionButtons extends StatelessWidget {
   final VoidCallback onTambahUjian;
 

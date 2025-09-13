@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../pages/detail_ujian_page.dart';
+import '../pages/bank_soal_detail_page.dart';
 
 class DashboardStatCard extends StatelessWidget {
   final String title;
@@ -60,10 +61,7 @@ class DashboardStatCard extends StatelessWidget {
 class DashboardSectionHeader extends StatelessWidget {
   final String title;
 
-  const DashboardSectionHeader(String s, {
-    super.key,
-    required this.title,
-  });
+  const DashboardSectionHeader(String s, {super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -125,10 +123,7 @@ class DashboardEmptyCard extends StatelessWidget {
 class DashboardUjianAktifCard extends StatelessWidget {
   final Map<String, String> item;
 
-  const DashboardUjianAktifCard({
-    super.key,
-    required this.item,
-  });
+  const DashboardUjianAktifCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +145,10 @@ class DashboardUjianAktifCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Center(
-                child: Image.asset(item['image'] ?? 'assets/images/ujian_aktif.png', height: 80),
+                child: Image.asset(
+                  item['image'] ?? 'assets/images/ujian_aktif.png',
+                  height: 80,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -187,7 +185,10 @@ class DashboardUjianAktifCard extends StatelessWidget {
             const SizedBox(height: 4),
             Align(
               alignment: Alignment.centerLeft,
-              child: Text(item['questions'] ?? '', style: AppTextStyle.cardSubtitle),
+              child: Text(
+                item['questions'] ?? '',
+                style: AppTextStyle.cardSubtitle,
+              ),
             ),
             const SizedBox(height: 12),
             Row(
@@ -241,10 +242,7 @@ class DashboardUjianAktifCard extends StatelessWidget {
 class DashboardBankSoalCard extends StatelessWidget {
   final Map<String, String> item;
 
-  const DashboardBankSoalCard({
-    super.key,
-    required this.item,
-  });
+  const DashboardBankSoalCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +264,10 @@ class DashboardBankSoalCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Center(
-                child: Image.asset(item['image'] ?? 'assets/images/bank_soal.png', height: 72),
+                child: Image.asset(
+                  item['image'] ?? 'assets/images/bank_soal.png',
+                  height: 72,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -301,18 +302,29 @@ class DashboardBankSoalCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      gradient: const LinearGradient(
-                        colors: [AppColors.primaryBlue, Color(0xFF025BB1)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                  child: InkWell(
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const BankSoalDetailPage(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 36,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF0081FF), Color(0xFF025BB1)],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Center(
+                          child: Text('Detail', style: AppTextStyle.button),
+                        ),
                       ),
-                    ),
-                    child: Center(
-                      child: Text('Detail', style: AppTextStyle.button),
                     ),
                   ),
                 ),
@@ -343,17 +355,12 @@ class DashboardHaloCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
           gradient: const LinearGradient(
-            colors: [
-              Color(0xFFFFFFFF),
-              Color(0xFFD8EFFF),
-            ],
+            colors: [Color(0xFFFFFFFF), Color(0xFFD8EFFF)],
           ),
         ),
         padding: const EdgeInsets.all(20),
@@ -365,9 +372,7 @@ class DashboardHaloCard extends StatelessWidget {
                 children: [
                   Text(
                     'Halo, Sobat Examo!',
-                    style: AppTextStyle.title.copyWith(
-                      fontSize: 20,
-                    ),
+                    style: AppTextStyle.title.copyWith(fontSize: 20),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -385,47 +390,6 @@ class DashboardHaloCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class DashboardSearchBar extends StatelessWidget {
-  const DashboardSearchBar({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      child: Column(
-        children: [
-          TextField(
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColors.white,
-              hintText: 'Telusuri',
-              hintStyle: AppTextStyle.inputText,
-              prefixIcon: Padding(
-                padding: const EdgeInsets.all(2),
-                child: SizedBox(
-                  width: 36,
-                  height: 36,
-                  child: Image.asset(
-                    'assets/images/search_icon.png',
-                    fit: BoxFit.scaleDown,
-                  ),
-                ),
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-        ],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 
 class KredensialHeader extends StatelessWidget {
   const KredensialHeader({super.key});
@@ -99,11 +100,7 @@ class ApiKeyField extends StatelessWidget {
               style: AppTextStyle.cardSubtitle,
             ),
           ),
-          Image.asset(
-            'assets/images/copy_icon.png',
-            height: 20,
-            width: 20,
-          ),
+          Icon(TablerIcons.copy, size: 20, color: AppColors.textGrey3),
         ],
       ),
     );
@@ -125,11 +122,7 @@ class WarningBox extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            'assets/images/danger.png',
-            height: 24,
-            width: 24,
-          ),
+          Icon(TablerIcons.alert_triangle_filled, size: 20, color: AppColors.dangerRed),
           const SizedBox(width: 12),
           Expanded(
             child: Text.rich(

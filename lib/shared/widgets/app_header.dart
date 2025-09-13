@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/styles.dart';
 
-// contoh provider untuk profilePic
 final profilePicProvider = StateProvider<String?>((ref) => null);
 
 class AppHeader extends ConsumerWidget {

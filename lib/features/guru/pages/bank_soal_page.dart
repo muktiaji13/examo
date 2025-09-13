@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../models/bank_soal_model.dart';
 import '../providers/bank_soal_provider.dart';
 import '../widgets/bank_soal_widget.dart';
@@ -15,10 +16,11 @@ class BankSoalPage extends ConsumerStatefulWidget {
   ConsumerState<BankSoalPage> createState() => _BankSoalPageState();
 }
 
-class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProviderStateMixin {
+class _BankSoalPageState extends ConsumerState<BankSoalPage>
+    with TickerProviderStateMixin {
   String activeMenu = 'bank_soal';
   bool isSidebarVisible = false;
-  
+
   // Notif state
   bool showDeleteNotif = false;
   BankSoalItem? pendingDeleteItem;
@@ -87,11 +89,9 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProvider
   }
 
   void goToDetailPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const BankSoalDetailPage(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const BankSoalDetailPage()));
   }
 
   @override
@@ -140,18 +140,28 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProvider
                                   ),
                                   const SizedBox(height: 12),
                                   Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Expanded(
-                                        child: BankSoalSearchBar(
+                                        child: SearchBarWidget(
                                           onChanged: notifier.setQuery,
+                                          padding: EdgeInsets
+                                              .zero,
+                                          showSpacing:
+                                              false,
                                         ),
                                       ),
-                                      const SizedBox(width: 12),
-                                      BankSoalSortDropdown(
-                                        currentValue: state.sort,
+                                      SizedBox(width: 8),
+                                      SizedBox(
+                                        height: 40,
+                                        child: BankSoalSortDropdown(
+                                          currentValue: state.sort,
+                                        ),
                                       ),
                                     ],
                                   ),
+
                                   const SizedBox(height: 12),
                                   BankSoalActionButtons(
                                     onTemplateTap: () {},
@@ -169,7 +179,8 @@ class _BankSoalPageState extends ConsumerState<BankSoalPage> with TickerProvider
                                               item: e,
                                               onDelete: () =>
                                                   notifier.remove(e.id),
-                                              onShowDeleteNotif: () => showDeleteNotification(e),
+                                              onShowDeleteNotif: () =>
+                                                  showDeleteNotification(e),
                                               onDetail: goToDetailPage,
                                             ),
                                           ),

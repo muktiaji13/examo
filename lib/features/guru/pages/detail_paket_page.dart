@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../../../config/styles.dart';
 import '../models/detail_paket_model.dart';
 import '../providers/detail_paket_provider.dart';
@@ -8,10 +9,13 @@ import '../widgets/detail_paket_widget.dart';
 
 class DetailPaketPage extends ConsumerStatefulWidget {
   final SubscriptionStatus initialStatus;
-  
+
   const DetailPaketPage({super.key, required this.initialStatus});
 
-  static Future<void> go(BuildContext context, {required SubscriptionStatus status}) {
+  static Future<void> go(
+    BuildContext context, {
+    required SubscriptionStatus status,
+  }) {
     return Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => DetailPaketPage(initialStatus: status)),
     );
@@ -26,7 +30,8 @@ class _DetailPaketPageState extends ConsumerState<DetailPaketPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(subscriptionStatusProvider.notifier).state = widget.initialStatus;
+      ref.read(subscriptionStatusProvider.notifier).state =
+          widget.initialStatus;
     });
   }
 
@@ -48,8 +53,14 @@ class _DetailPaketPageState extends ConsumerState<DetailPaketPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Detail Paket', style: AppTextStyle.title),
-                  const KembaliButton(),
+                  Text(
+                    'Detail Paket',
+                    style: AppTextStyle.title.copyWith(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const BackButtonWidget(),
                 ],
               ),
             ),

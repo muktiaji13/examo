@@ -1,43 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
 import '../../../config/styles.dart';
 import '../models/bank_soal_model.dart';
-
-class BankSoalSearchBar extends StatelessWidget {
-  final ValueChanged<String>? onChanged;
-  
-  const BankSoalSearchBar({
-    super.key,
-    this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 37,
-      child: TextField(
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: AppColors.white,
-          hintText: 'Telusuri',
-          hintStyle: AppTextStyle.inputText,
-          prefixIcon: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Image.asset(
-              'assets/images/search_icon.png',
-              width: 20,
-              height: 20,
-            ),
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(6),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class BankSoalSortDropdown extends StatelessWidget {
   final String currentValue;
@@ -65,11 +29,7 @@ class BankSoalSortDropdown extends StatelessWidget {
             style: AppTextStyle.inputText
           ),
           const SizedBox(width: 4),
-          Image.asset(
-            'assets/images/arrow_down.png',
-            width: 16,
-            height: 16,
-          ),
+          Icon(Icons.expand_more, size: 16, color: Color(0xFF9D9D9D)),
         ],
       ),
     );
@@ -103,19 +63,12 @@ class BankSoalActionButtons extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/download_icon.png',
-                    width: 22,
-                    height: 22,
-                  ),
+                  Icon(TablerIcons.download, color: Colors.white, size: 22),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Template',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
+                    style: AppTextStyle.button.copyWith(
                       fontSize: 17,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -137,19 +90,12 @@ class BankSoalActionButtons extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/plus.png',
-                    width: 22,
-                    height: 22,
-                  ),
+                  Icon(TablerIcons.plus, color: Colors.white, size: 22),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Bank Soal',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Poppins',
+                    style: AppTextStyle.button.copyWith(
                       fontSize: 17,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

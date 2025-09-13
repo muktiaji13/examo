@@ -10,7 +10,7 @@ class PasswordField extends ConsumerWidget {
   final VoidCallback? onToggleVisibility;
   final Color? borderColor;
   final bool readOnly;
-  final ValueChanged<String>? onChanged; 
+  final ValueChanged<String>? onChanged;
 
   const PasswordField({
     super.key,
@@ -20,7 +20,7 @@ class PasswordField extends ConsumerWidget {
     this.onToggleVisibility,
     this.borderColor,
     this.readOnly = false,
-    this.onChanged, 
+    this.onChanged,
   });
 
   @override
@@ -29,7 +29,7 @@ class PasswordField extends ConsumerWidget {
       controller: controller,
       obscureText: obscureText,
       readOnly: readOnly,
-      onChanged: onChanged, 
+      onChanged: onChanged,
       decoration: InputDecoration(
         filled: true,
         fillColor: Colors.white,
@@ -38,20 +38,25 @@ class PasswordField extends ConsumerWidget {
         suffixIcon: onToggleVisibility != null
             ? GestureDetector(
                 onTap: onToggleVisibility,
-                child: Image.asset(
-                  obscureText
-                      ? 'assets/auth-image/eye-off.png'
-                      : 'assets/auth-image/eye-on.png',
+                child: Icon(
+                  obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: const Color(0xFF777777),
                 ),
               )
-            : Image.asset('assets/auth-image/eye-off.png'),
+            : const Icon(Icons.visibility_off, color: Color(0xFF777777)),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor ?? const Color(0xFFD9D9D9), width: 1),
+          borderSide: BorderSide(
+            color: borderColor ?? const Color(0xFFD9D9D9),
+            width: 1,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: borderColor ?? const Color(0xFF2ECC71), width: 1),
+          borderSide: BorderSide(
+            color: borderColor ?? AppColors.successGreen,
+            width: 1,
+          ),
         ),
       ),
     );
@@ -72,16 +77,16 @@ class PasswordValidationItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Image.asset(
-          isValid ? 'assets/images/tick.png' : 'assets/images/cross.png',
-          width: 16,
-          height: 16,
+        Icon(
+          isValid ? Icons.check_circle : Icons.cancel,
+          size: 20,
+          color: isValid ? AppColors.successGreen : AppColors.dangerRed,
         ),
         const SizedBox(width: 8),
         Text(
           text,
           style: AppTextStyle.cardSubtitle.copyWith(
-            color: isValid ? const Color(0xFF2ECC71) : const Color(0xFFD21F28),
+            color: isValid ? AppColors.successGreen : AppColors.dangerRed,
           ),
         ),
       ],
@@ -107,23 +112,23 @@ class PasswordValidationRules extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         PasswordValidationItem(
-          isValid: validationState.isLengthValid, 
+          isValid: validationState.isLengthValid,
           text: "Karakter minimal 8",
         ),
         PasswordValidationItem(
-          isValid: validationState.hasUppercase, 
+          isValid: validationState.hasUppercase,
           text: "Satu karakter huruf besar",
         ),
         PasswordValidationItem(
-          isValid: validationState.hasLowercase, 
+          isValid: validationState.hasLowercase,
           text: "Satu karakter huruf kecil",
         ),
         PasswordValidationItem(
-          isValid: validationState.hasNumber, 
+          isValid: validationState.hasNumber,
           text: "Satu karakter angka",
         ),
         PasswordValidationItem(
-          isValid: validationState.hasSymbol, 
+          isValid: validationState.hasSymbol,
           text: "Satu karakter simbol",
         ),
       ],
@@ -148,10 +153,7 @@ class ActionButtons extends StatelessWidget {
       children: [
         Container(
           height: 37,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 22,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
           decoration: BoxDecoration(
             color: const Color(0xFFFFEAEB),
             borderRadius: BorderRadius.circular(10),
@@ -173,16 +175,10 @@ class ActionButtons extends StatelessWidget {
         const SizedBox(width: 10),
         Container(
           height: 37,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 26,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 8),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [
-                Color(0xFF0081FF),
-                Color(0xFF025BB1),
-              ],
+              colors: [Color(0xFF0081FF), Color(0xFF025BB1)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),

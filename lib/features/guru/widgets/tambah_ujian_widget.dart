@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/common_item.dart';
 
 class FormFieldLabel extends StatelessWidget {
   final String text;
@@ -200,35 +201,8 @@ class HeaderWithBackButton extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
         ),
-        GestureDetector(
-          onTap: onBackPressed,
-          child: Container(
-            height: 31,
-            width: 101,
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(5),
-              border: Border.all(
-                color: AppColors.textGrey.withOpacity(0.3),
-              ),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("assets/images/arrow-back.png", width: 18),
-                const SizedBox(width: 5),
-                Text(
-                  "Kembali",
-                  style: AppTextStyle.subtitle.copyWith(
-                    fontSize: 13,
-                    color: AppColors.black,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
+        BackButtonWidget(),
+        ],
     );
   }
 }

@@ -2,34 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../config/styles.dart';
 import '../models/detail_paket_model.dart';
 
-class KembaliButton extends StatelessWidget {
-  const KembaliButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 101,
-      height: 31,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        ),
-        onPressed: () => Navigator.of(context).maybePop(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/arrow-back.png', width: 15.94, height: 15.94),
-            const SizedBox(width: 6),
-            const Text('Kembali', style: TextStyle(fontSize: 13)),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class DetailPemesananCard extends StatelessWidget {
   final PackageDetail pkg;
   const DetailPemesananCard({super.key, required this.pkg});
@@ -39,25 +11,32 @@ class DetailPemesananCard extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(color: Color(0x1A000000), blurRadius: 4),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x1A000000), blurRadius: 4)],
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Detail Pemesanan', style: AppTextStyle.sectionTitle),
+          Text('Detail Pemesanan', style: AppTextStyle.cardTitle),
           const SizedBox(height: 15),
           _infoRow('Nama Paket', pkg.name),
           const SizedBox(height: 16),
-          _infoRow('Masa Berlaku', 'Paket aktif hingga ${_formatDate(pkg.end)}'),
+          _infoRow(
+            'Masa Berlaku',
+            'Paket aktif hingga ${_formatDate(pkg.end)}',
+          ),
           const SizedBox(height: 16),
-          Text('Detail Paket', style: AppTextStyle.label),
+          Text(
+            'Detail Paket',
+            style: AppTextStyle.label.copyWith(fontSize: 16),
+          ),
           const SizedBox(height: 6),
-          Text('Paket sudah termasuk :', style: AppTextStyle.value),
+          Text(
+            'Paket sudah termasuk :',
+            style: AppTextStyle.value.copyWith(fontSize: 16),
+          ),
           const SizedBox(height: 12),
           ...pkg.features.map((f) => FeatureRow(text: f)).toList(),
         ],
@@ -69,16 +48,28 @@ class DetailPemesananCard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: AppTextStyle.label),
+        Text(label, style: AppTextStyle.label.copyWith(fontSize: 16)),
         const SizedBox(height: 6),
-        Text(value, style: AppTextStyle.value),
+        Text(value, style: AppTextStyle.value.copyWith(fontSize: 16)),
       ],
     );
   }
 
   String _formatDate(DateTime d) {
-    const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
-                   'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    const months = [
+      'Januari',
+      'Februari',
+      'Maret',
+      'April',
+      'Mei',
+      'Juni',
+      'Juli',
+      'Agustus',
+      'September',
+      'Oktober',
+      'November',
+      'Desember',
+    ];
     return '${d.day} ${months[d.month - 1]} ${d.year}';
   }
 }
@@ -95,7 +86,12 @@ class FeatureRow extends StatelessWidget {
         children: [
           const Icon(Icons.check_circle, size: 20, color: Color(0xFF0081FF)),
           const SizedBox(width: 10),
-          Expanded(child: Text(text, style: AppTextStyle.featureText)),
+          Expanded(
+            child: Text(
+              text,
+              style: AppTextStyle.featureText.copyWith(fontSize: 16),
+            ),
+          ),
         ],
       ),
     );
@@ -107,7 +103,7 @@ class DetailPembayaranCard extends StatelessWidget {
   final SubscriptionStatus status;
   final VoidCallback onPay;
   final VoidCallback onResumePayment;
-  
+
   const DetailPembayaranCard({
     super.key,
     required this.pkg,
@@ -121,17 +117,15 @@ class DetailPembayaranCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(color: Color(0x1A000000), blurRadius: 4),
-        ],
+        boxShadow: const [BoxShadow(color: Color(0x1A000000), blurRadius: 4)],
       ),
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Detail Pembayaran', style: AppTextStyle.sectionTitle),
+          Text('Detail Pembayaran', style: AppTextStyle.cardTitle),
           const SizedBox(height: 16),
           _priceRow('Paket Premium', _formatRupiah(pkg.price)),
           const SizedBox(height: 10),
@@ -139,8 +133,13 @@ class DetailPembayaranCard extends StatelessWidget {
           const SizedBox(height: 16),
           const DashedDivider(),
           const SizedBox(height: 16),
-          _priceRow('Total', _formatRupiah(pkg.total), 
-                   isBoldRight: true, rightColor: const Color(0xFFD21F28)),
+          _priceRow(
+            'Total',
+            _formatRupiah(pkg.total),
+            isBoldRight: true,
+            rightColor: AppColors.dangerRed,
+            useBigStyle: true,
+          ),
           const SizedBox(height: 16),
           const DashedDivider(),
           const SizedBox(height: 16),
@@ -150,20 +149,37 @@ class DetailPembayaranCard extends StatelessWidget {
     );
   }
 
-  Widget _priceRow(String left, String right, {bool isBoldRight = false, Color? rightColor}) {
+  Widget _priceRow(
+    String left,
+    String right, {
+    bool isBoldRight = false,
+    Color? rightColor,
+    bool useBigStyle = false,
+  }) {
     return Row(
       children: [
-        Expanded(child: Text(left, style: AppTextStyle.priceLabel)),
+        Expanded(
+          child: Text(
+            left,
+            style: AppTextStyle.priceLabel.copyWith(fontSize: 16),
+          ),
+        ),
         SizedBox(
           width: 120,
           child: Text(
             right,
             textAlign: TextAlign.right,
-            style: TextStyle(
-              fontWeight: isBoldRight ? FontWeight.w600 : FontWeight.w500,
-              fontSize: 16,
-              color: rightColor ?? Colors.black,
-            ),
+            style: useBigStyle
+                ? AppTextStyle.price.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: rightColor ?? AppColors.black,
+                  )
+                : AppTextStyle.priceLabel.copyWith(
+                    fontSize: 16,
+                    fontWeight: isBoldRight ? FontWeight.w600 : FontWeight.w500,
+                    color: rightColor ?? AppColors.black,
+                  ),
           ),
         ),
       ],
@@ -173,11 +189,17 @@ class DetailPembayaranCard extends StatelessWidget {
   Widget _buildBottomAction() {
     switch (status) {
       case SubscriptionStatus.active:
-        return _statusPill('Status Langganan Aktif', 
-                          const Color(0xFFE5FFF0), const Color(0xFF2ECC71));
+        return _statusPill(
+          'Status Langganan Aktif',
+          const Color(0xFFE5FFF0),
+          const Color(0xFF2ECC71),
+        );
       case SubscriptionStatus.expired:
-        return _statusPill('Status Langganan Kadaluarsa', 
-                          const Color(0xFFE4E4E4), const Color(0xFF717171));
+        return _statusPill(
+          'Status Langganan Kadaluarsa',
+          const Color(0xFFE4E4E4),
+          const Color(0xFF717171),
+        );
       case SubscriptionStatus.pending:
         return _gradientButton('Lanjutkan Pembayaran', onResumePayment);
       case SubscriptionStatus.payNow:
@@ -188,13 +210,16 @@ class DetailPembayaranCard extends StatelessWidget {
   Widget _statusPill(String text, Color background, Color textColor) {
     return Container(
       width: double.infinity,
-      height: 35,
+      height: 40,
       decoration: BoxDecoration(
         color: background,
         borderRadius: BorderRadius.circular(25),
       ),
       alignment: Alignment.center,
-      child: Text(text, style: TextStyle(color: textColor, fontWeight: FontWeight.w600)),
+      child: Text(
+        text,
+        style: AppTextStyle.button.copyWith(fontSize: 14, color: textColor),
+      ),
     );
   }
 
@@ -203,15 +228,17 @@ class DetailPembayaranCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        height: 35,
+        height: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF0081FF), Color(0xFF004E99)],
+            colors: [AppColors.primaryBlue, Color(0xFF004E99)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Text(label, style: const TextStyle(color: Colors.white)),
+        child: Text(label, style: AppTextStyle.button),
       ),
     );
   }
@@ -224,7 +251,7 @@ class DetailPembayaranCard extends StatelessWidget {
       buffer.write(s[i]);
       if (reversedIndex % 3 == 0 && i != s.length - 1) buffer.write('.');
     }
-    return 'Rp.' + buffer.toString();
+    return 'Rp.$buffer';
   }
 }
 
@@ -243,7 +270,9 @@ class DashedDivider extends StatelessWidget {
             return const SizedBox(
               width: 4,
               height: 1,
-              child: DecoratedBox(decoration: BoxDecoration(color: Color(0xFFD9D9D9))),
+              child: DecoratedBox(
+                decoration: BoxDecoration(color: Color(0xFFD9D9D9)),
+              ),
             );
           }),
         );

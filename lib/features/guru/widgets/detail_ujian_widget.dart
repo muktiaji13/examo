@@ -1,48 +1,36 @@
-// lib/features/guru/widgets/detail_ujian_widget.dart
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tabler_icons/flutter_tabler_icons.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:remixicon/remixicon.dart';
 import '../../../config/styles.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../providers/detail_ujian_provider.dart';
 
 class DetailUjianHeader extends StatelessWidget {
   final VoidCallback onBack;
-  
-  const DetailUjianHeader({
-    super.key,
-    required this.onBack,
-  });
-  
+
+  const DetailUjianHeader({super.key, required this.onBack});
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('Detail Ujian', style: AppTextStyle.cardTitle),
-        GestureDetector(
-          onTap: onBack,
-          child: Row(
-            children: [
-              Image.asset('assets/images/arrow-back.png', width: 16, height: 16),
-              const SizedBox(width: 4),
-              Text('Kembali', style: AppTextStyle.cardSubtitle),
-            ],
-          ),
-        ),
+        BackButtonWidget(),
       ],
     );
   }
 }
 
 class DetailUjianCard extends ConsumerWidget {
-  const DetailUjianCard({
-    super.key,
-  });
-  
+  const DetailUjianCard({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exam = ref.watch(detailUjianProvider);
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -63,7 +51,12 @@ class DetailUjianCard extends ConsumerWidget {
                 color: const Color(0xFFD5EDFF),
                 borderRadius: BorderRadius.circular(15),
               ),
-              child: Center(child: Image.asset('assets/images/ujian_aktif.png', fit: BoxFit.contain)),
+              child: Center(
+                child: Image.asset(
+                  'assets/images/ujian_aktif.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
             ),
             const SizedBox(height: 12),
             // Title + time
@@ -76,8 +69,14 @@ class DetailUjianCard extends ConsumerWidget {
                     color: const Color(0xFFFFEAEB),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  child: Text(exam.timeText, style: AppTextStyle.menuItemDanger),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  child: Text(
+                    exam.timeText,
+                    style: AppTextStyle.menuItemDanger,
+                  ),
                 ),
               ],
             ),
@@ -92,7 +91,10 @@ class DetailUjianCard extends ConsumerWidget {
                     height: 30,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: const Color(0xFFEBEBEB), width: 1),
+                      border: Border.all(
+                        color: const Color(0xFFEBEBEB),
+                        width: 1,
+                      ),
                       borderRadius: BorderRadius.circular(25),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -100,7 +102,11 @@ class DetailUjianCard extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(exam.code, style: AppTextStyle.cardSubtitle),
-                        Image.asset('assets/images/copy.png', width: 16, height: 16),
+                        Icon(
+                          TablerIcons.copy,
+                          size: 16,
+                          color: Color(0xFF717171),
+                        ),
                       ],
                     ),
                   ),
@@ -112,25 +118,41 @@ class DetailUjianCard extends ConsumerWidget {
             UjianInfoRow(
               label: 'Tanggal :',
               value: exam.date,
-              icon: 'assets/images/yellow-date.png',
+              icon: const Icon(
+                TablerIcons.calendar_week,
+                size: 20,
+                color: Color(0xFFFFC615),
+              ),
               bgColor: const Color(0xFFFFF9E5),
             ),
             UjianInfoRow(
               label: 'Waktu Ujian :',
               value: exam.duration,
-              icon: 'assets/images/time.png',
+              icon: const Icon(
+                TablerIcons.clock,
+                size: 20,
+                color: Color(0xFF0077F4),
+              ),
               bgColor: const Color(0xFFE6F3FF),
             ),
             UjianInfoRow(
               label: 'Jumlah Soal :',
               value: exam.questionCount,
-              icon: 'assets/images/file.png',
+              icon: const Icon(
+                RemixIcons.file_list_line,
+                size: 20,
+                color: Color(0xFFFD9B73),
+              ),
               bgColor: const Color(0xFFFFEFE8),
             ),
             UjianInfoRow(
               label: 'Nilai KKM :',
               value: exam.kkm,
-              icon: 'assets/images/sort.png',
+              icon: const Icon(
+                LineAwesomeIcons.sort_amount_down,
+                size: 20,
+                color: Color(0xFF2ECC71),
+              ),
               bgColor: const Color(0xFFE6FFF0),
             ),
             const SizedBox(height: 12),
@@ -149,8 +171,13 @@ class DetailUjianCard extends ConsumerWidget {
                     color: const Color(0xFFFFF9E5),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  child: Center(child: Text('Edit', style: AppTextStyle.menuItem)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 8,
+                  ),
+                  child: Center(
+                    child: Text('Edit', style: AppTextStyle.menuItem),
+                  ),
                 ),
                 const SizedBox(width: 8),
                 Container(
@@ -159,11 +186,16 @@ class DetailUjianCard extends ConsumerWidget {
                     color: const Color(0xFF4D55CC),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                  child: Center(child: Text('Lihat Nilai', style: AppTextStyle.button)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 8,
+                  ),
+                  child: Center(
+                    child: Text('Lihat Nilai', style: AppTextStyle.button),
+                  ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -174,9 +206,9 @@ class DetailUjianCard extends ConsumerWidget {
 class UjianInfoRow extends StatelessWidget {
   final String label;
   final String value;
-  final String icon;
+  final Widget icon;
   final Color bgColor;
-  
+
   const UjianInfoRow({
     super.key,
     required this.label,
@@ -184,7 +216,7 @@ class UjianInfoRow extends StatelessWidget {
     required this.icon,
     required this.bgColor,
   });
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -198,7 +230,7 @@ class UjianInfoRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(
           children: [
-            Image.asset(icon, width: 20, height: 20),
+            icon,
             const SizedBox(width: 8),
             Expanded(child: Text(label, style: AppTextStyle.blackSubtitle)),
             Text(value, style: AppTextStyle.cardSubtitle),
@@ -210,14 +242,12 @@ class UjianInfoRow extends StatelessWidget {
 }
 
 class UjianRuleCard extends ConsumerWidget {
-  const UjianRuleCard({
-    super.key,
-  });
-  
+  const UjianRuleCard({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exam = ref.watch(detailUjianProvider);
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -229,7 +259,10 @@ class UjianRuleCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Peraturan dan Tata Cara Ujian:', style: AppTextStyle.blackSubtitle),
+          Text(
+            'Peraturan dan Tata Cara Ujian:',
+            style: AppTextStyle.blackSubtitle,
+          ),
           const SizedBox(height: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -239,11 +272,14 @@ class UjianRuleCard extends ConsumerWidget {
                 .map(
                   (e) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text('${e.key + 1}. ${e.value}', style: AppTextStyle.cardSubtitle),
+                    child: Text(
+                      '${e.key + 1}. ${e.value}',
+                      style: AppTextStyle.cardSubtitle,
+                    ),
                   ),
                 )
                 .toList(),
-          )
+          ),
         ],
       ),
     );

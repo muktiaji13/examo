@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../config/styles.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/sidebar_widget.dart';
+import '../../../shared/widgets/common_item.dart';
 import '../providers/daftar_ujian_provider.dart';
 import '../widgets/daftar_ujian_widget.dart';
 import 'tambah_ujian_page.dart';
@@ -15,6 +16,7 @@ class DaftarUjianPage extends ConsumerStatefulWidget {
 }
 
 class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
+  String search = '';
   String activeMenu = 'daftar_ujian';
   bool isSidebarVisible = false;
 
@@ -76,22 +78,35 @@ class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
                                 const SizedBox(height: 20),
                                 // Title
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
                                   child: Text(
                                     'Pilih Ujian',
-                                    style: AppTextStyle.title.copyWith(fontSize: 18),
+                                    style: AppTextStyle.title.copyWith(
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 12),
+
                                 // Telusuri
-                                const DaftarUjianSearchBar(),
+                                SearchBarWidget(
+                                  onChanged: (q) {
+                                    setState(() {
+                                      search = q;
+                                    });
+                                  },
+                                ),
+
                                 const SizedBox(height: 12),
                                 // Tambah Ujian + Filter
                                 DaftarUjianActionButtons(
                                   onTambahUjian: () {
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => const TambahUjianPage(),
+                                        builder: (context) =>
+                                            const TambahUjianPage(),
                                       ),
                                     );
                                   },
@@ -99,14 +114,19 @@ class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
                                 const SizedBox(height: 32),
                                 // List ujian
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                  ),
                                   child: Column(
                                     children: ujianList
                                         .map(
                                           (item) => DaftarUjianCard(
                                             item: item,
                                             onDetailTap: () {
-                                              // Aksi ketika klik detail
+                                              Navigator.pushNamed(
+                                                context,
+                                                '/detail_ujian',
+                                              );
                                             },
                                           ),
                                         )
@@ -152,7 +172,7 @@ class _DaftarUjianPageState extends ConsumerState<DaftarUjianPage> {
                 activeMenu: activeMenu,
                 onMenuTap: onMenuTap,
                 onClose: closeSidebar,
-                isVisible: isSidebarVisible, 
+                isVisible: isSidebarVisible,
               ),
             ),
           ),

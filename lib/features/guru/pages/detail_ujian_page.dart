@@ -11,28 +11,33 @@ class ExamDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(detailUjianProvider);
-    
+
     return Scaffold(
       backgroundColor: AppColors.background2,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const AppHeader(showBack: false),
-              const SizedBox(height: 16),
-              DetailUjianHeader(
-                onBack: () {
-                  Navigator.of(context).pop();
-                },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const AppHeader(showBack: false),
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DetailUjianHeader(
+                      onBack: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(height: 16),
+                    DetailUjianCard(),
+                    const SizedBox(height: 16),
+                    UjianRuleCard(),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              DetailUjianCard(),
-              const SizedBox(height: 16),
-              UjianRuleCard(),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

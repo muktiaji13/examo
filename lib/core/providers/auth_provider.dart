@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../api_service.dart';
 import 'package:http/http.dart' as http;
 
 final authProvider = StateNotifierProvider<AuthStateNotifier, AuthState>(
@@ -74,12 +75,12 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/login'),
+        Uri.parse('${ApiService.baseUrl}/login'),
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json', // tambahkan ini
+          'Content-Type': 'application/json',
         },
-        body: json.encode({'email': email, 'password': password}), // ubah ke json
+        body: json.encode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 200) {
@@ -113,13 +114,13 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       
       if (token != null) {
         await http.post(
-          Uri.parse('http://127.0.0.1:8000/api/logout'),
+          Uri.parse('${ApiService.baseUrl}/logout'),
           headers: {'Authorization': 'Bearer $token'},
         );
       }
       
       await prefs.clear();
-      state = AuthState(); // Reset state to default (no user, no role)
+      state = AuthState();
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
@@ -138,7 +139,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       if (token == null) return;
 
       final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/user'),
+        Uri.parse('${ApiService.baseUrl}/user'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
